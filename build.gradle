@@ -25,6 +25,12 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile("junit:junit")
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-jdbc')
+    compile('org.springframework.session:spring-session')
+    compile('mysql:mysql-connector-java:5.1.26')
+    compile('org.projectlombok:lombok:1.16.20')
+    testCompile('junit:junit')
+    testCompile('org.springframework.security:spring-security-test')
 }
