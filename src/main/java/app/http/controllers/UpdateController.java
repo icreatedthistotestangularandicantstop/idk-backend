@@ -3,6 +3,7 @@ package app.http.controllers;
 import app.core.repos.UpdateRepository;
 import app.http.pojos.UpdateResource;
 import app.pojo.Update;
+import app.services.UpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,12 @@ public class UpdateController {
     @Autowired
     private UpdateRepository updateRepository;
 
+    @Autowired
+    private UpdateService updateService;
+
     @RequestMapping(method = RequestMethod.POST)
     public Update add(final @RequestBody @Valid UpdateResource updateData) {
-        Update update = new Update();
-        update.setContent(updateData.getContent());
-        update.setUserId(updateData.getUserId());
-
-        int newUpdateId = updateRepository.add(update);
-        update.setId(newUpdateId);
+        Update update = updateService.addNew(updateData);
 
         return update;
     }
