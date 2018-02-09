@@ -60,7 +60,7 @@ public class LikeService {
 
     @Transactional
     public boolean unlikeComment(int commentId, int userId) {
-        final boolean unliked = removeUpdateLike(commentId, userId);
+        final boolean unliked = removeCommentLike(commentId, userId);
         if (unliked) {
             decrementCommentLikes(commentId);
 
