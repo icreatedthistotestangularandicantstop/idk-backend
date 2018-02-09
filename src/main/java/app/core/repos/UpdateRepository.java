@@ -124,6 +124,20 @@ public class UpdateRepository implements UpdateRepositoryInterface {
         return updates;
     }
 
+    @Override
+    public void incrementUpdateLikes(int updateId) {
+        final String sql = "UPDATE `updates` SET `likes` = `likes` + 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
+    }
+
+    @Override
+    public void decrementUpdateLikes(int updateId) {
+        final String sql = "UPDATE `updates` SET `likes` = `likes` - 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
+    }
+
     private RowMapper<Update> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             Update update = new Update();

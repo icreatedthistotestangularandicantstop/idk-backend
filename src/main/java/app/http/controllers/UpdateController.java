@@ -5,6 +5,7 @@ import app.http.pojos.CustomUserDetails;
 import app.http.pojos.FavoriteResponse;
 import app.http.pojos.UpdateResource;
 import app.pojo.Update;
+import app.services.LikeService;
 import app.services.UpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,9 @@ public class UpdateController {
     @Autowired
     private UpdateService updateService;
 
+    @Autowired
+    private LikeService likeService;
+
     @RequestMapping(method = RequestMethod.POST)
     public Update add(final @RequestBody @Valid UpdateResource updateData) {
         final Update update = updateService.addNew(updateData);
@@ -40,12 +44,28 @@ public class UpdateController {
         return updateRepository.findByUserId(userId);
     }
 
-    @RequestMapping(path = "/favorite/{updateId}")
+    @RequestMapping(path = "/favorite/{updateId}", method = RequestMethod.PUT)
     public FavoriteResponse favoriteUpdate(
             final @PathVariable("updateId") int updateId,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return new FavoriteResponse(updateService.favorite(updateId, userDetails.getId()));
+    }
+
+    @RequestMapping(path = "/like/{updateId}", method = RequestMethod.PUT)
+    public boolean likeUpdate(
+            final @PathVariable("updateId") int updateId,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return likeService.likeUpdate(updateId, userDetails.getId());
+    }
+
+    @RequestMapping(path = "/unlike/{updateId}", method = RequestMethod.PUT)
+    public boolean unlikeUpdate(
+            final @PathVariable("updateId") int updateId,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return likeService.unlikeUpdate(updateId, userDetails.getId());
     }
 
 }

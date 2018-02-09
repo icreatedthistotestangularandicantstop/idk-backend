@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `updates` (
     `id` INT PRIMARY KEY AUTO_INCREMENT,
     `content` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `favorites` INT NOT NULL DEFAULT 0,
+    `likes` INT NOT NULL DEFAULT 0,
     `user_id` INT NOT NULL REFERENCES `users` (`id`),
     `created_at` INT NOT NULL,
     UNIQUE (`id`, `user_id`)
@@ -31,3 +32,9 @@ CREATE TABLE IF NOT EXISTS `favorites` (
     `favorited_at` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `update_likes` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `update_id` INT NOT NULL REFERENCES `updates` (`id`),
+    `user_id` INT NOT NULL REFERENCES `users` (`id`),
+    `liked_at` INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
