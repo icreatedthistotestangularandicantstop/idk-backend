@@ -45,7 +45,7 @@ public class UpdateController {
     }
 
     @RequestMapping(path = "/favorite/{updateId}", method = RequestMethod.PUT)
-    public FavoriteResponse favoriteUpdate(
+    public FavoriteResponse favorite(
             final @PathVariable("updateId") int updateId,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -53,7 +53,7 @@ public class UpdateController {
     }
 
     @RequestMapping(path = "/like/{updateId}", method = RequestMethod.PUT)
-    public boolean likeUpdate(
+    public boolean like(
             final @PathVariable("updateId") int updateId,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -61,7 +61,7 @@ public class UpdateController {
     }
 
     @RequestMapping(path = "/unlike/{updateId}", method = RequestMethod.PUT)
-    public boolean unlikeUpdate(
+    public boolean unlike(
             final @PathVariable("updateId") int updateId,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {

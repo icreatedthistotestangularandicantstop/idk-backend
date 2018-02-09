@@ -1,5 +1,6 @@
 package app.services;
 
+import app.core.repos.CommentRepository;
 import app.core.repos.LikeRepository;
 import app.core.repos.UpdateRepository;
 import app.http.pojos.UpdateResource;
@@ -16,7 +17,10 @@ public class LikeService {
     private LikeRepository likeRepository;
 
     @Autowired
-    UpdateRepository updateRepository;
+    private UpdateRepository updateRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Transactional
     public boolean likeUpdate(int updateId, int userId) {
@@ -42,6 +46,30 @@ public class LikeService {
         }
     }
 
+    @Transactional
+    public boolean likeComment(int commentId, int userId) {
+        final boolean liked = addCommentLike(commentId, userId);
+        if (liked) {
+            incrementCommentLikes(commentId);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean unlikeComment(int commentId, int userId) {
+        final boolean unliked = removeUpdateLike(commentId, userId);
+        if (unliked) {
+            decrementCommentLikes(commentId);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void incrementUpdateLikes(int updateId) {
         updateRepository.incrementUpdateLikes(updateId);
     }
@@ -50,11 +78,29 @@ public class LikeService {
         updateRepository.decrementUpdateLikes(updateId);
     }
 
+
+    private void incrementCommentLikes(int commentId) {
+        commentRepository.incrementCommentLikes(commentId);
+    }
+
+    private void decrementCommentLikes(int commentId) {
+        commentRepository.decrementCommentLikes(commentId);
+    }
+
     private boolean addUpdateLike(int updateId, int userId) {
         if (hasUserLikedUpdate(updateId, userId)) {
             return false;
         }
         addUpdateLikeLink(updateId, userId);
+
+        return true;
+    }
+
+    private boolean addCommentLike(int commentId, int userId) {
+        if (hasUserLikedComment(commentId, userId)) {
+            return false;
+        }
+        addCommentLikeLink(commentId, userId);
 
         return true;
     }
@@ -68,8 +114,26 @@ public class LikeService {
         return true;
     }
 
+    private boolean removeCommentLike(int commentId, int userId) {
+        if (!hasUserLikedComment(commentId, userId)) {
+            return false;
+        }
+        likeRepository.deleteCommentLike(commentId, userId);
+
+        return true;
+    }
+
     public boolean hasUserLikedUpdate(int updateId, int userId) {
         final Like like = likeRepository.findUpdateLikeByUserId(updateId, userId);
+        if (like == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasUserLikedComment(int commentId, int userId) {
+        final Like like = likeRepository.findCommentLikeByUserId(commentId, userId);
         if (like == null) {
             return false;
         }
@@ -81,4 +145,7 @@ public class LikeService {
         likeRepository.addUpdateLike(updateId, userId);
     }
 
+    private void addCommentLikeLink(int updateId, int userId) {
+        likeRepository.addCommentLike(updateId, userId);
+    }
 }

@@ -56,6 +56,20 @@ public class CommentRepository implements CommentRepositoryInterface {
         return comments;
     }
 
+    @Override
+    public void incrementCommentLikes(int commentId) {
+        final String sql = "UPDATE `comments` SET `likes` = `likes` + 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", commentId));
+    }
+
+    @Override
+    public void decrementCommentLikes(int commentId) {
+        final String sql = "UPDATE `comments` SET `likes` = `likes` - 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", commentId));
+    }
+
     private RowMapper<Comment> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             Comment comment = new Comment();
