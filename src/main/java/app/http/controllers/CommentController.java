@@ -4,6 +4,7 @@ import app.core.repos.CommentRepository;
 import app.http.pojos.CommentResource;
 import app.http.pojos.CustomUserDetails;
 import app.pojo.Comment;
+import app.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +19,16 @@ public class CommentController {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private CommentService commentService;
+
     @RequestMapping(method = RequestMethod.POST)
     public Comment add(
             final @RequestBody @Valid CommentResource commentData,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        final Comment comment = new Comment();
-        comment.setContent(commentData.getContent());
-        comment.setUpdateId(commentData.getUpdateId());
-        comment.setUserId(userDetails.getId());
-
-        int newCommentId = commentRepository.add(comment);
-        comment.setId(newCommentId);
+        final int loggedUserId = userDetails.getId();
+        final Comment comment = commentService.addNew(commentData, loggedUserId);
 
         return comment;
     }

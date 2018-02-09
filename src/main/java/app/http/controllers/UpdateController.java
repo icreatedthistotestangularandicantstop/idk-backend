@@ -21,7 +21,7 @@ public class UpdateController {
 
     @RequestMapping(method = RequestMethod.POST)
     public Update add(final @RequestBody @Valid UpdateResource updateData) {
-        Update update = updateService.addNew(updateData);
+        final Update update = updateService.addNew(updateData);
 
         return update;
     }
