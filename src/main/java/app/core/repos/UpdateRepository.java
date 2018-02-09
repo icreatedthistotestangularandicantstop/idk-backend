@@ -2,18 +2,22 @@ package app.core.repos;
 
 import app.core.DB;
 import app.core.repos.intefaces.UpdateRepositoryInterface;
+import app.pojo.Favorite;
 import app.pojo.Update;
 import app.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class UpdateRepository implements UpdateRepositoryInterface {
@@ -33,6 +37,50 @@ public class UpdateRepository implements UpdateRepositoryInterface {
     }
 
     @Override
+    public void addFavorite(int updateId, int userId) {
+        final String sql = "INSERT INTO `favorites` (`update_id`, `user_id`, `favorited_at`) VALUES " +
+                "(:updateId, :userId, :favoritedAt)";
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("updateId", updateId);
+        params.put("favoritedAt", (int) System.currentTimeMillis() / 1000);
+
+        db.getJdbcTemplate().update(
+                sql,
+                new MapSqlParameterSource(params)
+        );
+    }
+
+    @Override
+    public Favorite findFavoriteByUpdateIdAndUserId(int updateId, int userId) {
+        final String sql = "SELECT * FROM `favorites` WHERE `update_id` = :updateId AND `user_id` = :userId LIMIT 1";
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("updateId", updateId);
+        params.put("userId", userId);
+
+        try {
+            final Favorite result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource(params),
+                    getFavoriteMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public int updateFavorites(int updateId) {
+        final String sql = "UPDATE `updates` SET `favorites` = `favorites` + 1 WHERE `id` = :id";
+
+        KeyHolder holder = new GeneratedKeyHolder();
+        int updated = db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
+
+        return updated;
+    }
+
+    @Override
     public Update findById(int id) {
         final String sql = "SELECT `id`, `content` FROM `updates` WHERE `id` = :id LIMIT 1";
         Update result = db.getJdbcTemplate().queryForObject(
@@ -42,6 +90,26 @@ public class UpdateRepository implements UpdateRepositoryInterface {
         );
 
         return result;
+    }
+
+    @Override
+    public Update findByIdAndUserId(int id, int userId) {
+        final String sql = "SELECT `id`, `content` FROM `updates` WHERE `id` = :id AND `user_id` = :userId LIMIT 1";
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("id", id);
+        params.put("userId", userId);
+
+        try {
+            final Update result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource(params),
+                    getMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -63,6 +131,17 @@ public class UpdateRepository implements UpdateRepositoryInterface {
             update.setContent(rs.getString("content"));
 
             return update;
+        };
+    }
+
+    private RowMapper<Favorite> getFavoriteMapper() {
+        return (ResultSet rs, int rowNum) -> {
+            Favorite favorite = new Favorite();
+            favorite.setId(rs.getInt("id"));
+            favorite.setUpdateId(rs.getInt("update_id"));
+            favorite.setUserId(rs.getInt("user_id"));
+
+            return favorite;
         };
     }
 
