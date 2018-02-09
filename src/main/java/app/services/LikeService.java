@@ -88,7 +88,7 @@ public class LikeService {
     }
 
     private boolean addUpdateLike(int updateId, int userId) {
-        if (hasUserLikedUpdate(updateId, userId)) {
+        if (!updateRepository.exists(updateId) || hasUserLikedUpdate(updateId, userId)) {
             return false;
         }
         addUpdateLikeLink(updateId, userId);
@@ -97,7 +97,7 @@ public class LikeService {
     }
 
     private boolean addCommentLike(int commentId, int userId) {
-        if (hasUserLikedComment(commentId, userId)) {
+        if (!commentRepository.exists(commentId) || hasUserLikedComment(commentId, userId)) {
             return false;
         }
         addCommentLikeLink(commentId, userId);
@@ -106,7 +106,7 @@ public class LikeService {
     }
 
     private boolean removeUpdateLike(int updateId, int userId) {
-        if (!hasUserLikedUpdate(updateId, userId)) {
+        if (!updateRepository.exists(updateId) || !hasUserLikedUpdate(updateId, userId)) {
             return false;
         }
         likeRepository.deleteUpdateLike(updateId, userId);
@@ -115,7 +115,7 @@ public class LikeService {
     }
 
     private boolean removeCommentLike(int commentId, int userId) {
-        if (!hasUserLikedComment(commentId, userId)) {
+        if (!commentRepository.exists(commentId) || !hasUserLikedComment(commentId, userId)) {
             return false;
         }
         likeRepository.deleteCommentLike(commentId, userId);

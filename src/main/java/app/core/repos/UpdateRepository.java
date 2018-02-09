@@ -138,6 +138,18 @@ public class UpdateRepository implements UpdateRepositoryInterface {
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
     }
 
+    @Override
+    public boolean exists(int id) {
+        final String sql = "SELECT count(*) FROM `updates` WHERE `id` = :id";
+        final int count = db.getJdbcTemplate().queryForObject(
+                sql,
+                new MapSqlParameterSource("id", id),
+                (rs, row) -> rs.getInt(1)
+        );
+
+        return 0 < count;
+    }
+
     private RowMapper<Update> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             Update update = new Update();

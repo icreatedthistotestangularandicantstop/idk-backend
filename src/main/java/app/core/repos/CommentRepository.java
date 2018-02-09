@@ -70,6 +70,18 @@ public class CommentRepository implements CommentRepositoryInterface {
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", commentId));
     }
 
+    @Override
+    public boolean exists(int id) {
+        final String sql = "SELECT count(*) FROM `comments` WHERE `id` = :id";
+        final int count = db.getJdbcTemplate().queryForObject(
+                sql,
+                new MapSqlParameterSource("id", id),
+                (rs, row) -> rs.getInt(1)
+        );
+
+        return 0 < count;
+    }
+
     private RowMapper<Comment> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             Comment comment = new Comment();

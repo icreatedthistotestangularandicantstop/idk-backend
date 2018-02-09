@@ -10,4 +10,5 @@ public interface CommentRepositoryInterface {
     List<Comment> findByUpdateId(int updateId);
     void incrementCommentLikes(int commentId);
     void decrementCommentLikes(int commentId);
+    boolean exists(int id);
 }
