@@ -32,6 +32,9 @@ public class CommentController {
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         final int loggedUserId = userDetails.getId();
+        System.out.println("UPDATE ID: " + commentData.getUpdateId());
+        System.out.println("CONTENT: " + commentData.getContent());
+
         final Comment comment = commentService.addNew(commentData, loggedUserId);
 
         return comment;

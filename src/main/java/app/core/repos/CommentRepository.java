@@ -23,7 +23,7 @@ public class CommentRepository implements CommentRepositoryInterface {
 
     public int add(Comment comment) {
         final String sql = "INSERT INTO `comments` (`content`, `update_id`, `user_id`, `created_at`) VALUES " +
-                "(:content, :update_id, :user_id, :created_at)";
+                "(:content, :updateId, :userId, :createdAt)";
         comment.setCreatedAt(System.currentTimeMillis() / 1000);
 
         KeyHolder holder = new GeneratedKeyHolder();

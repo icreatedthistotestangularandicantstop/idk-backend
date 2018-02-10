@@ -25,12 +25,10 @@ public class AuthController {
 
     @RequestMapping(path = "/login-data", method = RequestMethod.GET)
     public AuthResource loginData(final @AuthenticationPrincipal CustomUserDetails user, final HttpSession session) {
-        if (user == null) {
-            System.out.println("USER IS NULL");
+        if (user == null || session == null) {
+            return null;
         }
-        if (session == null) {
-            System.out.println("SESSION IS NULL");
-        }
+
         return new AuthResource(user.getId(), session.getId());
     }
 
