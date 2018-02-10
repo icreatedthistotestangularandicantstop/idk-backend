@@ -5,34 +5,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collector;
 
 public class CustomUserDetails implements UserDetails {
-
-    public enum Type {
-        ADMIN("A", Collections.singleton(() -> "ADMIN")),
-        USER("U", Collections.singleton(() -> "USER"));
-
-        private final String token;
-        private final Collection<? extends GrantedAuthority> roles;
-
-        Type(String token, Collection<? extends GrantedAuthority> roles) {
-            this.token = token;
-            this.roles = roles;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public Collection<? extends GrantedAuthority> getRoles() {
-            return roles;
-        }
-    }
 
     private int id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+
+    public static Collection<? extends GrantedAuthority> getDefaultAuthorities() {
+        Collection<? extends GrantedAuthority> defaultAuthority = Collections.singleton(() -> "USER");
+
+        return defaultAuthority;
+    }
 
     public CustomUserDetails(int id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;

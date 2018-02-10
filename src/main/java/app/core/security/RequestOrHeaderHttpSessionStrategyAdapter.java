@@ -9,13 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RequestOrHeaderHttpSessionStrategyAdapter implements HttpSessionStrategy {
 
-    private HeaderHttpSessionStrategy headerSessionStrategy = new HeaderHttpSessionStrategy();
     private static final String X_AUTH_TOKEN = "x-auth-token";
+    private HeaderHttpSessionStrategy headerSessionStrategy = new HeaderHttpSessionStrategy();
 
     @Override
     public String getRequestedSessionId(HttpServletRequest request) {
-        final String sessionTokenFromHeader = headerSessionStrategy.getRequestedSessionId(request);
-        return null != sessionTokenFromHeader ? sessionTokenFromHeader : sessionTokenFromRequest(request);
+        final String sessionId = headerSessionStrategy.getRequestedSessionId(request);
+
+        return sessionId != null ? sessionId : sessionTokenFromRequest(request);
     }
 
     private String sessionTokenFromRequest(HttpServletRequest request) {

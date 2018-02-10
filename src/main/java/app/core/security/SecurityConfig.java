@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(new CORSFilter(), SessionManagementFilter.class)
                 .formLogin().disable()
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
@@ -44,9 +45,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .regexMatchers(OPTIONS, ".*").permitAll()
                 .regexMatchers(GET, "/status").permitAll()
-                .regexMatchers(POST, "/auth/*").permitAll()
+                .regexMatchers(POST, "/api/auth/login").permitAll()
+                .regexMatchers(POST, "/api/auth/logout").permitAll()
+                .regexMatchers(GET, "/api/auth/login-data").permitAll()
 
-                .regexMatchers("/api/.*").hasAuthority("USER");
+                .regexMatchers("/api/.*").hasAuthority(AuthorityType.USER_ROLE);
     }
 
     @Autowired
