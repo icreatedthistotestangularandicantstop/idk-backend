@@ -2,6 +2,7 @@ package app.core.repos;
 
 import app.core.DB;
 import app.core.repos.intefaces.CommentRepositoryInterface;
+import app.http.pojos.Page;
 import app.pojo.Comment;
 import app.pojo.Update;
 import app.pojo.User;
@@ -14,10 +15,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class CommentRepository implements CommentRepositoryInterface {
+    public static final int PAGE_SIZE = 7;
+
     @Autowired
     private DB db;
 
@@ -46,10 +51,32 @@ public class CommentRepository implements CommentRepositoryInterface {
 
     @Override
     public List<Comment> findByUpdateId(int updateId) {
-        final String sql = "SELECT`id`, `content`, `user_id`, `update_id` FROM `updates` WHERE `user_id` = :updateId ORDER BY `created_at` DESC";
+        final String sql = "SELECT `id`, `content`, `user_id`, `update_id` FROM `updates` WHERE `user_id` = :updateId ORDER BY `created_at` DESC";
         List<Comment> comments = db.getJdbcTemplate().query(
                 sql,
                 new MapSqlParameterSource("updateId", updateId),
+                getMapper()
+        );
+
+        return comments;
+    }
+
+    @Override
+    public List<Comment> findByUpdateIdPaged(int updateId, Page page) {
+        final String sql = "SELECT * " +
+                " FROM `updates` " +
+                " WHERE `user_id` = :updateId " +
+                " ORDER BY `created_at` DESC " +
+                " LIMIT :offset, :limit"
+                ;
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("updateId", updateId);
+        params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
+        params.put("limit", PAGE_SIZE);
+
+        final List<Comment> comments = db.getJdbcTemplate().query(
+                sql,
+                new MapSqlParameterSource(params),
                 getMapper()
         );
 
