@@ -1,5 +1,6 @@
 package app.core.repos.intefaces;
 
+import app.http.pojos.Page;
 import app.pojo.Favorite;
 import app.pojo.Update;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 public interface UpdateRepositoryInterface {
     int add(Update update);
+    List<Update> findPaged(Page page);
     Update findById(int id);
     List<Update> findByUserId(int userId);
     Update findByIdAndUserId(int id, int userId);

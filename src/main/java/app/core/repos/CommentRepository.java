@@ -51,7 +51,10 @@ public class CommentRepository implements CommentRepositoryInterface {
 
     @Override
     public List<Comment> findByUpdateId(int updateId) {
-        final String sql = "SELECT `id`, `content`, `user_id`, `update_id` FROM `updates` WHERE `user_id` = :updateId ORDER BY `created_at` DESC";
+        final String sql = "SELECT `id`, `content`, `user_id`, `update_id` " +
+                " FROM `comments` " +
+                " WHERE `update_id` = :updateId " +
+                " ORDER BY `created_at` DESC ";
         List<Comment> comments = db.getJdbcTemplate().query(
                 sql,
                 new MapSqlParameterSource("updateId", updateId),
@@ -64,11 +67,10 @@ public class CommentRepository implements CommentRepositoryInterface {
     @Override
     public List<Comment> findByUpdateIdPaged(int updateId, Page page) {
         final String sql = "SELECT * " +
-                " FROM `updates` " +
-                " WHERE `user_id` = :updateId " +
+                " FROM `comments` " +
+                " WHERE `update_id` = :updateId " +
                 " ORDER BY `created_at` DESC " +
-                " LIMIT :offset, :limit"
-                ;
+                " LIMIT :offset, :limit";
         final Map<String, Integer> params = new HashMap<>();
         params.put("updateId", updateId);
         params.put("offset", (page.getPage() - 1) * PAGE_SIZE);

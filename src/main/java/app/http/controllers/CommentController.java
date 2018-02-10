@@ -32,8 +32,6 @@ public class CommentController {
             final @Valid Page page,
             final @PathVariable int updateId
     ) {
-        System.out.println("PAGE: " + page.getPage());
-        System.out.println("UPDATE ID: " + updateId);
         return commentRepository.findByUpdateIdPaged(updateId, page);
     }
 
@@ -43,9 +41,6 @@ public class CommentController {
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         final int loggedUserId = userDetails.getId();
-        System.out.println("UPDATE ID: " + commentData.getUpdateId());
-        System.out.println("CONTENT: " + commentData.getContent());
-
         final Comment comment = commentService.addNew(commentData, loggedUserId);
 
         return comment;

@@ -2,6 +2,8 @@ package app.core.repos;
 
 import app.core.DB;
 import app.core.repos.intefaces.UpdateRepositoryInterface;
+import app.http.pojos.Page;
+import app.pojo.Comment;
 import app.pojo.Favorite;
 import app.pojo.Update;
 import app.pojo.User;
@@ -21,6 +23,8 @@ import java.util.Map;
 
 @Component
 public class UpdateRepository implements UpdateRepositoryInterface {
+    public static final int PAGE_SIZE = 10;
+
     @Autowired
     private DB db;
 
@@ -78,6 +82,26 @@ public class UpdateRepository implements UpdateRepositoryInterface {
         int updated = db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
 
         return updated;
+    }
+
+    @Override
+    public List<Update> findPaged(Page page) {
+        final String sql = "SELECT * " +
+                " FROM `updates` " +
+                " ORDER BY `created_at` DESC " +
+                " LIMIT :offset, :limit"
+                ;
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
+        params.put("limit", PAGE_SIZE);
+
+        final List<Update> updates = db.getJdbcTemplate().query(
+                sql,
+                new MapSqlParameterSource(params),
+                getMapper()
+        );
+
+        return updates;
     }
 
     @Override
