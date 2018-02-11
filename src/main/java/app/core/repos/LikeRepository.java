@@ -126,6 +126,23 @@ public class LikeRepository implements LikeRepositoryInterface {
     }
 
     @Override
+    public List<Like> findCommentLikesByIds(Set<Integer> commentIds, int userId) {
+        final String sql = "SELECT * FROM `comment_likes` WHERE `comment_id` IN (:commentIds) AND `user_id` = :userId";
+        try {
+            final List<Like> result = db.getJdbcTemplate().query(
+                    sql,
+                    new MapSqlParameterSource("commentIds", commentIds)
+                            .addValue("userId", userId),
+                    getCommentLikeMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public void deleteCommentLike(int commentId, int userId) {
         final String sql = "DELETE FROM `comment_likes` WHERE `comment_id` = :commentId AND `user_id` = :userId";
         final Map<String, Integer> params = new HashMap<>();

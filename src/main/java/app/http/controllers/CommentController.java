@@ -2,6 +2,7 @@ package app.http.controllers;
 
 import app.core.repos.CommentRepository;
 import app.http.pojos.CommentResource;
+import app.http.pojos.CommentResponse;
 import app.http.pojos.CustomUserDetails;
 import app.http.pojos.Page;
 import app.pojo.Comment;
@@ -28,11 +29,12 @@ public class CommentController {
     private LikeService likeService;
 
     @RequestMapping(path = "list/{updateId}", method = RequestMethod.GET)
-    public List<Comment> getComments(
+    public List<CommentResponse> getComments(
             final @Valid Page page,
-            final @PathVariable int updateId
+            final @PathVariable int updateId,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return commentRepository.findByUpdateIdPaged(updateId, page);
+        return commentService.findByUpdateIdPaged(page, updateId, userDetails == null ? null : userDetails.getId());
     }
 
     @RequestMapping(method = RequestMethod.POST)

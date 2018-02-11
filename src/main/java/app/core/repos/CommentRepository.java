@@ -113,11 +113,12 @@ public class CommentRepository implements CommentRepositoryInterface {
 
     private RowMapper<Comment> getMapper() {
         return (ResultSet rs, int rowNum) -> {
-            Comment comment = new Comment();
+            final Comment comment = new Comment();
             comment.setId(rs.getInt("id"));
             comment.setContent(rs.getString("content"));
             comment.setUpdateId(rs.getInt("update_id"));
             comment.setUserId(rs.getInt("user_id"));
+            comment.setLikes(rs.getInt("likes"));
 
             return comment;
         };

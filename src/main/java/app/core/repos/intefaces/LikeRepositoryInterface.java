@@ -15,5 +15,6 @@ public interface LikeRepositoryInterface {
     Like findUpdateLikeByUserId(int updateId, int userId);
     Like findCommentLikeByUserId(int commentId, int userId);
     List<Like> findUpdateLikesByIds(Set<Integer> updateIds, int userId);
+    List<Like> findCommentLikesByIds(Set<Integer> commentIds, int userId);
 
 }
