@@ -1,17 +1,62 @@
 package app.services;
 
+import app.core.repos.LikeRepository;
 import app.core.repos.UpdateRepository;
+import app.http.pojos.Page;
 import app.http.pojos.UpdateResource;
+import app.http.pojos.UpdateResponse;
 import app.pojo.Favorite;
+import app.pojo.Like;
 import app.pojo.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @Component
 public class UpdateService {
     @Autowired
     private UpdateRepository updateRepository;
+
+    @Autowired
+    private LikeRepository likeRepository;
+
+    public List<UpdateResponse> findPaged(Page page, Integer userId) {
+        List<Update> updates = updateRepository.findPaged(page);
+        Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
+
+        List<UpdateResponse> response = new ArrayList<>();
+        for (Update update : updates) {
+            final UpdateResponse item = UpdateResponse.createFromUpdate(update);
+            item.setLiked(likedUpdateIds.contains(update.getId()));
+            response.add(item);
+        }
+
+        return response;
+    }
+
+    private Set<Integer> getLikedUpdates(List<Update> updates, Integer userId) {
+        List<Like> updateLikes = Collections.EMPTY_LIST;
+        if (userId != null) {
+            updateLikes = likeRepository.findUpdateLikesByIds(getUpdateIds(updates), userId);
+        }
+        Set<Integer> likedUpdateIds = new HashSet<>();
+        for (Like like : updateLikes) {
+            likedUpdateIds.add(like.getItemId());
+        }
+
+        return likedUpdateIds;
+    }
+
+    private Set<Integer> getUpdateIds(List<Update> updates) {
+        Set<Integer> result = new HashSet<>();
+        for (Update update : updates) {
+            result.add(update.getId());
+        }
+
+        return result;
+    }
 
     public Update addNew(UpdateResource updateResource) {
         Update update = new Update();

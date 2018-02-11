@@ -1,10 +1,7 @@
 package app.http.controllers;
 
 import app.core.repos.UpdateRepository;
-import app.http.pojos.CustomUserDetails;
-import app.http.pojos.FavoriteResponse;
-import app.http.pojos.Page;
-import app.http.pojos.UpdateResource;
+import app.http.pojos.*;
 import app.pojo.Comment;
 import app.pojo.Update;
 import app.services.LikeService;
@@ -38,10 +35,11 @@ public class UpdateController {
 
 
     @RequestMapping(path = "list", method = RequestMethod.GET)
-    public List<Update> getUpdates(
-            final @Valid Page page
+    public List<UpdateResponse> getUpdates(
+            final @Valid Page page,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return updateRepository.findPaged(page);
+        return updateService.findPaged(page, userDetails == null ? null : userDetails.getId());
     }
 
     @RequestMapping(path = "/{updateId}", method = RequestMethod.GET)

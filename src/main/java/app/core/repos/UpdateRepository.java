@@ -186,7 +186,7 @@ public class UpdateRepository implements UpdateRepositoryInterface {
             final Update update = new Update();
             update.setId(rs.getInt("id"));
             update.setContent(rs.getString("content"));
-            update.setLikesCount(rs.getInt("likes"));
+            update.setLikes(rs.getInt("likes"));
             update.setCommentsCount(rs.getInt("comments"));
 
             return update;

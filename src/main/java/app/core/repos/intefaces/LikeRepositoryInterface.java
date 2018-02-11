@@ -5,6 +5,7 @@ import app.pojo.Like;
 import app.pojo.Update;
 
 import java.util.List;
+import java.util.Set;
 
 public interface LikeRepositoryInterface {
     Like addUpdateLike(int updateId, int userId);
@@ -13,5 +14,6 @@ public interface LikeRepositoryInterface {
     void deleteCommentLike(int commentId, int userId);
     Like findUpdateLikeByUserId(int updateId, int userId);
     Like findCommentLikeByUserId(int commentId, int userId);
+    List<Like> findUpdateLikesByIds(Set<Integer> updateIds, int userId);
 
 }

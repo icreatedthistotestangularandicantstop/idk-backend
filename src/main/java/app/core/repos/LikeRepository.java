@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class LikeRepository implements LikeRepositoryInterface {
@@ -48,7 +49,7 @@ public class LikeRepository implements LikeRepositoryInterface {
 
     @Override
     public Like addUpdateLike(int commentId, int userId) {
-        final String sql = "INSERT INTO `update_likes` (`comment_id`, `user_id`, `liked_at`) VALUES " +
+        final String sql = "INSERT INTO `update_likes` (`update_id`, `user_id`, `liked_at`) VALUES " +
                 "(:commentId, :userId, :likedAt)";
         final int likedAt = (int) System.currentTimeMillis() / 1000;
         final Map<String, Integer> params = new HashMap<>();
@@ -98,6 +99,23 @@ public class LikeRepository implements LikeRepositoryInterface {
             final Like result = db.getJdbcTemplate().queryForObject(
                     sql,
                     new MapSqlParameterSource(params),
+                    getUpdateLikeMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Like> findUpdateLikesByIds(Set<Integer> updateIds, int userId) {
+        final String sql = "SELECT * FROM `update_likes` WHERE `update_id` IN (:updateIds) AND `user_id` = :userId";
+        try {
+            final List<Like> result = db.getJdbcTemplate().query(
+                    sql,
+                    new MapSqlParameterSource("updateIds", updateIds)
+                        .addValue("userId", userId),
                     getUpdateLikeMapper()
             );
 
