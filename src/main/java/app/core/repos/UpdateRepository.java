@@ -106,8 +106,8 @@ public class UpdateRepository implements UpdateRepositoryInterface {
 
     @Override
     public Update findById(int id) {
-        final String sql = "SELECT `id`, `content` FROM `updates` WHERE `id` = :id LIMIT 1";
-        Update result = db.getJdbcTemplate().queryForObject(
+        final String sql = "SELECT * FROM `updates` WHERE `id` = :id LIMIT 1";
+        final Update result = db.getJdbcTemplate().queryForObject(
                 sql,
                 new MapSqlParameterSource("id", id),
                 getMapper()
@@ -118,7 +118,7 @@ public class UpdateRepository implements UpdateRepositoryInterface {
 
     @Override
     public Update findByIdAndUserId(int id, int userId) {
-        final String sql = "SELECT `id`, `content` FROM `updates` WHERE `id` = :id AND `user_id` = :userId LIMIT 1";
+        final String sql = "SELECT * FROM `updates` WHERE `id` = :id AND `user_id` = :userId LIMIT 1";
         final Map<String, Integer> params = new HashMap<>();
         params.put("id", id);
         params.put("userId", userId);
@@ -138,14 +138,21 @@ public class UpdateRepository implements UpdateRepositoryInterface {
 
     @Override
     public List<Update> findByUserId(int userId) {
-        final String sql = "SELECT `id`, `content` FROM `updates` WHERE `user_id` = :userId ORDER BY `created_at` DESC";
-        List<Update> updates = db.getJdbcTemplate().query(
+        final String sql = "SELECT * FROM `updates` WHERE `user_id` = :userId ORDER BY `created_at` DESC";
+        final List<Update> updates = db.getJdbcTemplate().query(
                 sql,
                 new MapSqlParameterSource("userId", userId),
                 getMapper()
         );
 
         return updates;
+    }
+
+    @Override
+    public void incrementUpdateComments(int updateId) {
+        final String sql = "UPDATE `updates` SET `comments` = `comments` + 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
     }
 
     @Override
@@ -176,9 +183,11 @@ public class UpdateRepository implements UpdateRepositoryInterface {
 
     private RowMapper<Update> getMapper() {
         return (ResultSet rs, int rowNum) -> {
-            Update update = new Update();
+            final Update update = new Update();
             update.setId(rs.getInt("id"));
             update.setContent(rs.getString("content"));
+            update.setLikesCount(rs.getInt("likes"));
+            update.setCommentsCount(rs.getInt("comments"));
 
             return update;
         };
@@ -186,7 +195,7 @@ public class UpdateRepository implements UpdateRepositoryInterface {
 
     private RowMapper<Favorite> getFavoriteMapper() {
         return (ResultSet rs, int rowNum) -> {
-            Favorite favorite = new Favorite();
+            final Favorite favorite = new Favorite();
             favorite.setId(rs.getInt("id"));
             favorite.setUpdateId(rs.getInt("update_id"));
             favorite.setUserId(rs.getInt("user_id"));

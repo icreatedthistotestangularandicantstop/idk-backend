@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `updates` (
     `content` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `favorites` INT NOT NULL DEFAULT 0,
     `user_id` INT NOT NULL REFERENCES `users` (`id`),
+    `comments` INT NOT NULL DEFAULT 0,
     `likes` INT NOT NULL DEFAULT 0,
     `created_at` INT NOT NULL,
     UNIQUE (`id`, `user_id`)

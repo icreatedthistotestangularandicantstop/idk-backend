@@ -13,6 +13,7 @@ public class Comment implements Serializable {
     private String content;
     private int updateId;
     private int userId;
+    private int likes;
     private long createdAt;
 
 }

@@ -14,6 +14,7 @@ public interface UpdateRepositoryInterface {
     Update findByIdAndUserId(int id, int userId);
     void addFavorite(int updateId, int userId);
     Favorite findFavoriteByUpdateIdAndUserId(int updateId, int userId);
+    void incrementUpdateComments(int updateId);
     void incrementUpdateLikes(int updateId);
     void decrementUpdateLikes(int updateId);
     boolean exists(int id);
