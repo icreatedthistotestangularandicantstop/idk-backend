@@ -40,13 +40,17 @@ public class CommentRepository implements CommentRepositoryInterface {
     @Override
     public Comment findById(int id) {
         final String sql = "SELECT `id`, `content`, `user_id`, `update_id` FROM `comments` WHERE `id` = :id LIMIT 1";
-        final Comment result = db.getJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource("id", id),
-                getMapper()
-        );
+        try {
+            final Comment result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("id", id),
+                    getMapper()
+            );
 
-        return result;
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -102,13 +106,17 @@ public class CommentRepository implements CommentRepositoryInterface {
     @Override
     public boolean exists(int id) {
         final String sql = "SELECT count(*) FROM `comments` WHERE `id` = :id";
-        final int count = db.getJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource("id", id),
-                (rs, row) -> rs.getInt(1)
-        );
+        try {
+            final int count = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("id", id),
+                    (rs, row) -> rs.getInt(1)
+            );
 
-        return 0 < count;
+            return 0 < count;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private RowMapper<Comment> getMapper() {

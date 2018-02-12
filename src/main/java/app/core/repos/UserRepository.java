@@ -4,6 +4,7 @@ import app.core.DB;
 import app.core.repos.intefaces.UserRepositoryInterface;
 import app.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -31,22 +32,30 @@ public class UserRepository implements UserRepositoryInterface {
 
     public User findByUsername(String username) {
         final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password` FROM `users` WHERE `username` = :username LIMIT 1";
-        User result = db.getJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource("username", username),
-                (ResultSet rs, int rowNum) -> {
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setFirstName(rs.getString("first_name"));
-                    user.setLastName(rs.getString("last_name"));
-                    user.setUsername(rs.getString("username"));
-                    user.setPassword(rs.getString("password"));
+        try {
+            final User result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("username", username),
+                    getMapper()
+            );
 
-                    return user;
-                }
-        );
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-        return result;
+    private RowMapper<User> getMapper() {
+        return (ResultSet rs, int rowNum) -> {
+            final User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+
+            return user;
+        };
     }
 
 }

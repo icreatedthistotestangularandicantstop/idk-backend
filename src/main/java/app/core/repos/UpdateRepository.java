@@ -107,13 +107,17 @@ public class UpdateRepository implements UpdateRepositoryInterface {
     @Override
     public Update findById(int id) {
         final String sql = "SELECT * FROM `updates` WHERE `id` = :id LIMIT 1";
-        final Update result = db.getJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource("id", id),
-                getMapper()
-        );
+        try {
+            final Update result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("id", id),
+                    getMapper()
+            );
 
-        return result;
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -172,13 +176,17 @@ public class UpdateRepository implements UpdateRepositoryInterface {
     @Override
     public boolean exists(int id) {
         final String sql = "SELECT count(*) FROM `updates` WHERE `id` = :id";
-        final int count = db.getJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource("id", id),
-                (rs, row) -> rs.getInt(1)
-        );
+        try {
+            final int count = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("id", id),
+                    (rs, row) -> rs.getInt(1)
+            );
 
-        return 0 < count;
+            return 0 < count;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private RowMapper<Update> getMapper() {
