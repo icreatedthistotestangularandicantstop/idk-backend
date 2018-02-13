@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `last_name` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `username` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci UNIQUE NOT NULL,
     `password` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    `followers` INT NOT NULL DEFAULT 0,
     `created_at` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -46,4 +47,10 @@ CREATE TABLE IF NOT EXISTS `comment_likes` (
     `comment_id` INT NOT NULL REFERENCES `updates` (`id`),
     `user_id` INT NOT NULL REFERENCES `users` (`id`),
     `liked_at` INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `followers` (
+    `follower_id` INT NOT NULL REFERENCES `users` (`id`),
+    `followed_id` INT NOT NULL REFERENCES `users` (`id`),
+    `followed_at` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
