@@ -1,12 +1,17 @@
 package app.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
+import java.util.LinkedList;
+import java.util.List;
 
 @Component
 public class DB {
@@ -21,4 +26,9 @@ public class DB {
         return jdbcTemplate;
     }
 
+    public <T> List<T> query(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) {
+        List<T> result = jdbcTemplate.query(sql, paramSource, rowMapper);
+
+        return result == null ? new LinkedList<>() : result;
+    }
 }

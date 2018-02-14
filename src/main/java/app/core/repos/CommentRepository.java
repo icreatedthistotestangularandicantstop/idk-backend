@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class CommentRepository implements CommentRepositoryInterface {
+public class CommentRepository extends BaseRepository implements CommentRepositoryInterface {
     public static final int PAGE_SIZE = 7;
 
     @Autowired
@@ -59,7 +59,7 @@ public class CommentRepository implements CommentRepositoryInterface {
                 " FROM `comments` " +
                 " WHERE `update_id` = :updateId " +
                 " ORDER BY `created_at` DESC ";
-        final List<Comment> comments = db.getJdbcTemplate().query(
+        final List<Comment> comments = db.query(
                 sql,
                 new MapSqlParameterSource("updateId", updateId),
                 getMapper()
@@ -80,7 +80,7 @@ public class CommentRepository implements CommentRepositoryInterface {
         params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
         params.put("limit", PAGE_SIZE);
 
-        final List<Comment> comments = db.getJdbcTemplate().query(
+        final List<Comment> comments = db.query(
                 sql,
                 new MapSqlParameterSource(params),
                 getMapper()

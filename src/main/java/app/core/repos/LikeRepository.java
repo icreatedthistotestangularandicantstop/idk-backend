@@ -16,13 +16,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
-public class LikeRepository implements LikeRepositoryInterface {
+public class LikeRepository extends BaseRepository implements LikeRepositoryInterface {
     @Autowired
     private DB db;
 
@@ -110,9 +107,12 @@ public class LikeRepository implements LikeRepositoryInterface {
 
     @Override
     public List<Like> findUpdateLikesByIds(Set<Integer> updateIds, int userId) {
+        if (updateIds.isEmpty()) {
+            return getEmptyList(Like.class);
+        }
         final String sql = "SELECT * FROM `update_likes` WHERE `update_id` IN (:updateIds) AND `user_id` = :userId";
         try {
-            final List<Like> result = db.getJdbcTemplate().query(
+            final List<Like> result = db.query(
                     sql,
                     new MapSqlParameterSource("updateIds", updateIds)
                         .addValue("userId", userId),
@@ -121,15 +121,18 @@ public class LikeRepository implements LikeRepositoryInterface {
 
             return result;
         } catch (Exception e) {
-            return null;
+            return getEmptyList(Like.class);
         }
     }
 
     @Override
     public List<Like> findCommentLikesByIds(Set<Integer> commentIds, int userId) {
+        if (commentIds.isEmpty()) {
+            return getEmptyList(Like.class);
+        }
         final String sql = "SELECT * FROM `comment_likes` WHERE `comment_id` IN (:commentIds) AND `user_id` = :userId";
         try {
-            final List<Like> result = db.getJdbcTemplate().query(
+            final List<Like> result = db.query(
                     sql,
                     new MapSqlParameterSource("commentIds", commentIds)
                             .addValue("userId", userId),
@@ -138,7 +141,8 @@ public class LikeRepository implements LikeRepositoryInterface {
 
             return result;
         } catch (Exception e) {
-            return null;
+            System.out.println(e.getMessage());
+            return getEmptyList(Like.class);
         }
     }
 

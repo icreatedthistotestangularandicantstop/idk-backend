@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UpdateRepository implements UpdateRepositoryInterface {
+public class UpdateRepository extends BaseRepository implements UpdateRepositoryInterface {
     public static final int PAGE_SIZE = 10;
 
     @Autowired
@@ -95,7 +95,7 @@ public class UpdateRepository implements UpdateRepositoryInterface {
         params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
         params.put("limit", PAGE_SIZE);
 
-        final List<Update> updates = db.getJdbcTemplate().query(
+        final List<Update> updates = db.query(
                 sql,
                 new MapSqlParameterSource(params),
                 getMapper()
@@ -143,7 +143,7 @@ public class UpdateRepository implements UpdateRepositoryInterface {
     @Override
     public List<Update> findByUserId(int userId) {
         final String sql = "SELECT * FROM `updates` WHERE `user_id` = :userId ORDER BY `created_at` DESC";
-        final List<Update> updates = db.getJdbcTemplate().query(
+        final List<Update> updates = db.query(
                 sql,
                 new MapSqlParameterSource("userId", userId),
                 getMapper()

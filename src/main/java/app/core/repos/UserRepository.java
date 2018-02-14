@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 
 @Component
-public class UserRepository implements UserRepositoryInterface {
+public class UserRepository extends BaseRepository implements UserRepositoryInterface {
     @Autowired
     private DB db;
 
