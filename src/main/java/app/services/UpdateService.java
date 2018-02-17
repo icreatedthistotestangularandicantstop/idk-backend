@@ -2,12 +2,14 @@ package app.services;
 
 import app.core.repos.LikeRepository;
 import app.core.repos.UpdateRepository;
+import app.core.repos.UserRepository;
 import app.http.pojos.Page;
 import app.http.pojos.UpdateResource;
 import app.http.pojos.UpdateResponse;
 import app.pojo.Favorite;
 import app.pojo.Like;
 import app.pojo.Update;
+import app.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,20 +22,46 @@ public class UpdateService {
     private UpdateRepository updateRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private LikeRepository likeRepository;
 
     public List<UpdateResponse> findPaged(Page page, Integer userId) {
-        List<Update> updates = updateRepository.findPaged(page);
-        Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
+        final List<Update> updates = updateRepository.findPaged(page);
+        final Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
+        final Map<Integer, User> users = getUserUpdateOwners(updates);
 
-        List<UpdateResponse> response = new ArrayList<>();
+        final List<UpdateResponse> response = new ArrayList<>();
         for (Update update : updates) {
             final UpdateResponse item = UpdateResponse.createFromUpdate(update);
             item.setLiked(likedUpdateIds.contains(update.getId()));
+            item.setUser(users.get(update.getUserId()));
             response.add(item);
         }
 
         return response;
+    }
+
+    private Map<Integer, User> getUserUpdateOwners(List<Update> updates) {
+        final Map<Integer, User> result = new HashMap<>();
+        final Set<Integer> userIds = getUserIds(updates);
+        System.out.println(userIds);
+        final List<User> users = userRepository.findByIds(userIds);
+        for (User user : users) {
+            result.put(user.getId(), user);
+        }
+
+        return result;
+    }
+
+    private Set<Integer> getUserIds(List<Update> updates) {
+        final Set<Integer> userIds = new HashSet<>();
+        for (Update update : updates) {
+            userIds.add(update.getUserId());
+        }
+
+        return userIds;
     }
 
     private Set<Integer> getLikedUpdates(List<Update> updates, Integer userId) {

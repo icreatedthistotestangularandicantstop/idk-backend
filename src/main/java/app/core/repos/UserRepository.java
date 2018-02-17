@@ -12,6 +12,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class UserRepository extends BaseRepository implements UserRepositoryInterface {
@@ -45,6 +47,17 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         }
     }
 
+    @Override
+    public List<User> findByIds(Set<Integer> ids) {
+        if (ids.isEmpty()) {
+            return getEmptyList(User.class);
+        }
+        final String sql = "SELECT `id`, `first_name`, `last_name`, `username` FROM `users` WHERE `id` IN (:ids)";
+        List<User> users = db.query(sql, new MapSqlParameterSource("ids", ids), getMapperSmall());
+
+        return users;
+    }
+
     private RowMapper<User> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             final User user = new User();
@@ -53,6 +66,18 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
             user.setLastName(rs.getString("last_name"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
+
+            return user;
+        };
+    }
+
+    private RowMapper<User> getMapperSmall() {
+        return (ResultSet rs, int rowNum) -> {
+            final User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setUsername(rs.getString("username"));
 
             return user;
         };

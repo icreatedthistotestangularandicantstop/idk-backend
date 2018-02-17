@@ -193,6 +193,8 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
         return (ResultSet rs, int rowNum) -> {
             final Update update = new Update();
             update.setId(rs.getInt("id"));
+            update.setUserId(rs.getInt("user_id"));
+            update.setCreatedAt(rs.getInt("created_at"));
             update.setContent(rs.getString("content"));
             update.setLikes(rs.getInt("likes"));
             update.setCommentsCount(rs.getInt("comments"));

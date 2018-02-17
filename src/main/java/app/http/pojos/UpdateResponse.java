@@ -1,6 +1,7 @@
 package app.http.pojos;
 
 import app.pojo.Update;
+import app.pojo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class UpdateResponse implements Serializable {
     private int id;
+    private User user;
     private String content;
     private int userId;
     private int likes;
