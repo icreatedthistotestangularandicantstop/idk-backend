@@ -54,3 +54,15 @@ CREATE TABLE IF NOT EXISTS `followers` (
     `followed_id` INT NOT NULL REFERENCES `users` (`id`),
     `followed_at` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `tags` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    `created_at` INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `update_tags` (
+    `tag_id` INT NOT NULL REFERENCES `tags` (`id`),
+    `update_id` INT NOT NULL REFERENCES `updates` (`id`),
+    UNIQUE(`tag_id`, `update_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -1,20 +1,19 @@
 package app.services;
 
 import app.core.repos.LikeRepository;
+import app.core.repos.TagRepository;
 import app.core.repos.UpdateRepository;
 import app.core.repos.UserRepository;
 import app.http.pojos.Page;
 import app.http.pojos.UpdateResource;
 import app.http.pojos.UpdateResponse;
-import app.pojo.Favorite;
-import app.pojo.Like;
-import app.pojo.Update;
-import app.pojo.User;
+import app.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Component
 public class UpdateService {
@@ -26,6 +25,12 @@ public class UpdateService {
 
     @Autowired
     private LikeRepository likeRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private TagService tagService;
 
     public List<UpdateResponse> findPaged(Page page, Integer userId) {
         final List<Update> updates = updateRepository.findPaged(page);
@@ -78,7 +83,7 @@ public class UpdateService {
     }
 
     private Set<Integer> getUpdateIds(List<Update> updates) {
-        Set<Integer> result = new HashSet<>();
+        final Set<Integer> result = new HashSet<>();
         for (Update update : updates) {
             result.add(update.getId());
         }
@@ -87,7 +92,7 @@ public class UpdateService {
     }
 
     public Update addNew(UpdateResource updateResource) {
-        Update update = new Update();
+        final Update update = new Update();
         update.setContent(updateResource.getContent());
         update.setUserId(updateResource.getUserId());
 
@@ -95,6 +100,36 @@ public class UpdateService {
         update.setId(newUpdateId);
 
         return update;
+    }
+
+    private void addUpdateTags(final Update update) {
+        final Set<String> tagNames = getTagsFromContent(update.getContent());
+        final List<Tag> tags = tagService.addTags(tagNames);
+    }
+
+    private Set<String> getTagsFromContent(String content) {
+        final Set<String> tags = new HashSet<>();
+        final char[] c = content.toCharArray();
+        String tag = "";
+        for (int i = 0; i < c.length; ) {
+            if (Pattern.matches("\\s", "" + c[i])) {
+                if (i < c.length - 1 && '#' == c[i + 1]) {
+                    int j;
+                    for (j = i + 2; j < c.length && '#' != c[j] && !Pattern.matches("\\s", "" + c[j]); j++) {
+                        tag += c[j];
+                    }
+                    i = j;
+                    tags.add(tag);
+                    tag = "";
+                } else {
+                    i++;
+                }
+            } else {
+                i++;
+            }
+        }
+
+        return tags;
     }
 
     @Transactional
