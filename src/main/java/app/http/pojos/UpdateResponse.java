@@ -1,5 +1,6 @@
 package app.http.pojos;
 
+import app.pojo.Tag;
 import app.pojo.Update;
 import app.pojo.User;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +17,7 @@ import java.io.Serializable;
 public class UpdateResponse implements Serializable {
     private int id;
     private User user;
+    private List<Tag> tags;
     private String content;
     private int userId;
     private int likes;
@@ -29,6 +33,7 @@ public class UpdateResponse implements Serializable {
         this.setId(update.getId());
         this.setLikes(update.getLikes());
         this.setUserId(update.getUserId());
+        this.setTags(new ArrayList<>());
     }
 
     public static UpdateResponse createFromUpdate(Update update) {

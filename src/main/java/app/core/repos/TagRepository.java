@@ -107,12 +107,43 @@ public class TagRepository extends BaseRepository {
         }
     }
 
+    public List<Tag> findUpdateTagsByUpdateIds(final Set<Integer> updateIds) {
+        final String sql =
+                " SELECT t.*, u.update_id " +
+                " FROM `tags` t " +
+                " JOIN `update_tags` u ON t.`id` = u.`tag_id` " +
+                " WHERE u.`update_id` IN (:updateIds)";
+        try {
+            final List<Tag> result = db.query(
+                    sql,
+                    new MapSqlParameterSource("updateIds", updateIds),
+                    getTagUpdateMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return getEmptyList(Tag.class);
+        }
+    }
+
     private RowMapper<Tag> getMapper() {
         return (ResultSet rs, int rowNum) -> {
             final Tag tag = new Tag();
             tag.setId(rs.getInt("id"));
             tag.setName(rs.getString("name"));
             tag.setCreatedAt(rs.getInt("created_at"));
+
+            return tag;
+        };
+    }
+
+    private RowMapper<Tag> getTagUpdateMapper() {
+        return (ResultSet rs, int rowNum) -> {
+            final Tag tag = new Tag();
+            tag.setId(rs.getInt("id"));
+            tag.setName(rs.getString("name"));
+            tag.setCreatedAt(rs.getInt("created_at"));
+            tag.setUpdateId(rs.getInt("update_id"));
 
             return tag;
         };

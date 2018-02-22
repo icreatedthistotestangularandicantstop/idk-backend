@@ -9,6 +9,7 @@ import app.http.pojos.UpdateResource;
 import app.http.pojos.UpdateResponse;
 import app.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,16 +37,35 @@ public class UpdateService {
         final List<Update> updates = updateRepository.findPaged(page);
         final Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
         final Map<Integer, User> users = getUserUpdateOwners(updates);
+        final Map<Integer, List<Tag>> updateTags = getUpdateTagsFromUpdates(updates);
 
         final List<UpdateResponse> response = new ArrayList<>();
         for (Update update : updates) {
             final UpdateResponse item = UpdateResponse.createFromUpdate(update);
             item.setLiked(likedUpdateIds.contains(update.getId()));
             item.setUser(users.get(update.getUserId()));
+            item.setTags(updateTags.get(update.getId()));
+
             response.add(item);
         }
 
         return response;
+    }
+
+    private Map<Integer, List<Tag>> getUpdateTagsFromUpdates(final List<Update> updates) {
+        final Map<Integer, List<Tag>> result = new HashMap<>();
+        final List<Tag> tags = tagRepository.findUpdateTagsByUpdateIds(getUpdateIds(updates));
+
+        for (Tag tag : tags) {
+            List<Tag> l = result.get(tag.getUpdateId());
+            if (null == l) {
+                l = new ArrayList<>();
+                result.put(tag.getUpdateId(), l);
+            }
+            l.add(tag);
+        }
+
+        return result;
     }
 
     private Map<Integer, User> getUserUpdateOwners(List<Update> updates) {
