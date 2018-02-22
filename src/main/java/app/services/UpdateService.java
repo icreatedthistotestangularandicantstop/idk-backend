@@ -91,13 +91,15 @@ public class UpdateService {
         return result;
     }
 
+    @Transactional
     public Update addNew(UpdateResource updateResource) {
         final Update update = new Update();
         update.setContent(updateResource.getContent());
         update.setUserId(updateResource.getUserId());
 
-        int newUpdateId = updateRepository.add(update);
+        final int newUpdateId = updateRepository.add(update);
         update.setId(newUpdateId);
+        addUpdateTags(update);
 
         return update;
     }
@@ -105,9 +107,10 @@ public class UpdateService {
     private void addUpdateTags(final Update update) {
         final Set<String> tagNames = getTagsFromContent(update.getContent());
         final List<Tag> tags = tagService.addTags(tagNames);
+        tagService.addUpdateTagLink(tags, update.getId());
     }
 
-    private Set<String> getTagsFromContent(String content) {
+    private Set<String> getTagsFromContent(final String content) {
         final Set<String> tags = new HashSet<>();
         final char[] c = content.toCharArray();
         String tag = "";

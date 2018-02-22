@@ -38,8 +38,8 @@ public class TagService {
     }
 
     public void addUpdateTagLink(final List<Tag> tags, final int updateId) {
-        final List<UpdateTag> updateTags = tagRepository.findUpdateTagsByUpdateId(updateId);
-        final Set<Integer> toAddTagIds = getTagIdsToAdd(tags, updateTags);
+        final List<UpdateTag> currentUpdateTags = tagRepository.findUpdateTagsByUpdateId(updateId);
+        final Set<Integer> toAddTagIds = getTagIdsToAdd(tags, currentUpdateTags);
         tagRepository.addUpdateTags(toAddTagIds, updateId);
     }
 

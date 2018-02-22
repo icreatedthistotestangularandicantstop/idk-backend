@@ -31,7 +31,7 @@ public class TagRepository extends BaseRepository {
 
     public Tag addTag(final String name) {
         final String sql = "INSERT INTO `tags` (`name`, `created_at`) VALUES " +
-                "(:name, :userId, :createdAt)";
+                "(:name, :createdAt)";
         final int createdAt = (int) System.currentTimeMillis() / 1000;
         final Map<String, Object> params = new HashMap<>();
         params.put("name", name);
