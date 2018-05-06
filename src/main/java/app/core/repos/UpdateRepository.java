@@ -85,13 +85,20 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public List<Update> findPaged(Page page) {
+    public List<Update> findPaged(final Page page) {
+        return findPagedByUserId(page, null);
+    }
+
+    @Override
+    public List<Update> findPagedByUserId(final Page page, final Integer targetUserId) {
         final String sql = "SELECT * " +
                 " FROM `updates` " +
+                " WHERE (:userId IS NULL OR `user_id` = :userId) " +
                 " ORDER BY `created_at` DESC " +
                 " LIMIT :offset, :limit"
                 ;
         final Map<String, Integer> params = new HashMap<>();
+        params.put("userId", targetUserId);
         params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
         params.put("limit", PAGE_SIZE);
 

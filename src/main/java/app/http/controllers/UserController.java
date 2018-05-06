@@ -11,8 +11,18 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/api/user")
 public class UserController {
+
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    UserController(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
+    public User getById(final @PathVariable int userId) {
+        return userRepository.findById(userId);
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public User add(final @RequestBody @Valid UserCreateResource userCreateData) {

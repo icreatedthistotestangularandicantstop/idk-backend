@@ -39,7 +39,19 @@ public class UpdateController {
             final @Valid Page page,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return updateService.findPaged(page, userDetails == null ? null : userDetails.getId());
+        final Integer loggedUserId = userDetails == null ? null : userDetails.getId();
+
+        return updateService.findPaged(page, loggedUserId);
+    }
+
+    @RequestMapping(path = "list/user/{userId}", method = RequestMethod.GET)
+    public List<UpdateResponse> getUpdatesForUser(
+            final @Valid Page page,
+            final @PathVariable("userId") Integer userId,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        final Integer loggedUserId = userDetails == null ? null : userDetails.getId();
+        return updateService.findPagedByUserId(page, userId, loggedUserId);
     }
 
     @RequestMapping(path = "/{updateId}", method = RequestMethod.GET)

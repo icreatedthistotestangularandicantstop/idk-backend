@@ -33,8 +33,19 @@ public class UpdateService {
     @Autowired
     private TagService tagService;
 
-    public List<UpdateResponse> findPaged(Page page, Integer userId) {
+    public List<UpdateResponse> findPaged(final Page page, final Integer userId) {
         final List<Update> updates = updateRepository.findPaged(page);
+
+        return filterUpdates(updates, userId);
+    }
+
+    public List<UpdateResponse> findPagedByUserId(final Page page, final Integer targetUserId, final Integer userId) {
+        final List<Update> updates = updateRepository.findPaged(page);
+
+        return filterUpdates(updates, userId);
+    }
+
+    private List<UpdateResponse> filterUpdates(final List<Update> updates, final Integer userId) {
         final Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
         final Map<Integer, User> users = getUserUpdateOwners(updates);
         final Map<Integer, List<Tag>> updateTags = getUpdateTagsFromUpdates(updates);

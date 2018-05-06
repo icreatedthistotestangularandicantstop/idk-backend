@@ -47,6 +47,21 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         }
     }
 
+    public User findById(final int id) {
+        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password` FROM `users` WHERE `id` = :id LIMIT 1";
+        try {
+            final User result = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource("id", id),
+                    getMapper()
+            );
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     public List<User> findByIds(Set<Integer> ids) {
         if (ids.isEmpty()) {
