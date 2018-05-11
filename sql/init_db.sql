@@ -66,3 +66,10 @@ CREATE TABLE IF NOT EXISTS `update_tags` (
     `update_id` INT NOT NULL REFERENCES `updates` (`id`),
     UNIQUE(`tag_id`, `update_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE images (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `created_at` INT NOT NULL,
+    `mime_type` VARCHAR(40) NOT NULL,
+    `user_id` INT NOT NULL REFERENCES `users` (`id`)
+);

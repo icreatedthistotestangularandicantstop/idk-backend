@@ -20,6 +20,7 @@ public class UpdateResponse implements Serializable {
     private List<Tag> tags;
     private String content;
     private int userId;
+    private int imageId;
     private int likes;
     private int commentsCount;
     private long createdAt;

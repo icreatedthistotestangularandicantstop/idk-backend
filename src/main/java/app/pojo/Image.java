@@ -9,13 +9,11 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class Image implements Serializable {
     private int id;
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
+    private String mimeType;
+    private int userId;
     private long createdAt;
-    private Image image;
+    private byte[] data;
 
 }

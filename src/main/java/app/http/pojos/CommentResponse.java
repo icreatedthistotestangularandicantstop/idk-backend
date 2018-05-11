@@ -1,6 +1,7 @@
 package app.http.pojos;
 
 import app.pojo.Comment;
+import app.pojo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ public class CommentResponse implements Serializable {
     private String content;
     private int updateId;
     private int userId;
+    private User user;
+    private int imageId;
     private int likes;
     private long createdAt;
     private boolean liked;

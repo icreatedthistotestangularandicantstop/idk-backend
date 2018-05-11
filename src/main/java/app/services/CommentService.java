@@ -3,9 +3,9 @@ package app.services;
 import app.core.repos.CommentRepository;
 import app.core.repos.LikeRepository;
 import app.core.repos.UpdateRepository;
+import app.core.repos.UserRepository;
 import app.http.pojos.*;
-import app.pojo.Comment;
-import app.pojo.Like;
+import app.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,18 +23,61 @@ public class CommentService {
     @Autowired
     private LikeRepository likeRepository;
 
-    public List<CommentResponse> findByUpdateIdPaged(Page page, int updateId, Integer userId) {
-        List<Comment> comments = commentRepository.findByUpdateIdPaged(updateId, page);
-        Set<Integer> likedUpdateIds = getLikedComments(comments, userId);
+    private final ImageService imageService;
 
-        List<CommentResponse> response = new ArrayList<>();
-        for (Comment comment: comments) {
+    final UserRepository userRepository;
+
+    CommentService(final ImageService imageService, final UserRepository userRepository) {
+        this.imageService = imageService;
+        this.userRepository = userRepository;
+    }
+
+    public List<CommentResponse> findByUpdateIdPaged(Page page, int updateId, Integer userId) {
+        final List<Comment> comments = commentRepository.findByUpdateIdPaged(updateId, page);
+        final Set<Integer> likedUpdateIds = getLikedComments(comments, userId);
+        final Map<Integer, Image> userImages = getUserImages(comments);
+        final Map<Integer, User> users = getUserCommentOwners(comments);
+
+        final List<CommentResponse> response = new ArrayList<>();
+        for (final Comment comment: comments) {
             final CommentResponse item = CommentResponse.createFromComment(comment);
             item.setLiked(likedUpdateIds.contains(comment.getId()));
+            item.setUser(users.get(comment.getUserId()));
+            final Image image = userImages.get(comment.getUserId());
+            if (null != image) {
+                item.setImageId(image.getId());
+            }
+
             response.add(item);
         }
 
         return response;
+    }
+
+    private Map<Integer, User> getUserCommentOwners(final List<Comment> comments) {
+        final Map<Integer, User> result = new HashMap<>();
+        final Set<Integer> userIds = getUserIds(comments);
+        final List<User> users = userRepository.findByIds(userIds);
+        for (final User user : users) {
+            result.put(user.getId(), user);
+        }
+
+        return result;
+    }
+
+    private Map<Integer, Image> getUserImages(final List<Comment> comments) {
+        final Set<Integer> userIds = getUserIds(comments);
+
+        return imageService.getImageForUsers(userIds);
+    }
+
+    private Set<Integer> getUserIds(final List<Comment> comments) {
+        final Set<Integer> userIds = new HashSet<>();
+        for (final Comment comment : comments) {
+            userIds.add(comment.getUserId());
+        }
+
+        return userIds;
     }
 
     private Set<Integer> getLikedComments(List<Comment> comments, Integer userId) {

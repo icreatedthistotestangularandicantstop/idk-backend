@@ -1,9 +1,6 @@
 package app.services;
 
-import app.core.repos.LikeRepository;
-import app.core.repos.TagRepository;
-import app.core.repos.UpdateRepository;
-import app.core.repos.UserRepository;
+import app.core.repos.*;
 import app.http.pojos.Page;
 import app.http.pojos.UpdateResource;
 import app.http.pojos.UpdateResponse;
@@ -33,6 +30,16 @@ public class UpdateService {
     @Autowired
     private TagService tagService;
 
+    private final ImageRepository imageRepository;
+
+    private final ImageService imageService;
+
+    @Autowired
+    UpdateService(final ImageRepository imageRepository, final ImageService imageService) {
+        this.imageRepository = imageRepository;
+        this.imageService = imageService;
+    }
+
     public List<UpdateResponse> findPaged(final Page page, final Integer userId) {
         final List<Update> updates = updateRepository.findPaged(page);
 
@@ -49,6 +56,7 @@ public class UpdateService {
         final Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
         final Map<Integer, User> users = getUserUpdateOwners(updates);
         final Map<Integer, List<Tag>> updateTags = getUpdateTagsFromUpdates(updates);
+        final Map<Integer, Image> userImages = getUserImages(updates);
 
         final List<UpdateResponse> response = new ArrayList<>();
         for (Update update : updates) {
@@ -56,11 +64,21 @@ public class UpdateService {
             item.setLiked(likedUpdateIds.contains(update.getId()));
             item.setUser(users.get(update.getUserId()));
             item.setTags(updateTags.get(update.getId()));
+            final Image image = userImages.get(update.getUserId());
+            if (null != image) {
+                item.setImageId(image.getId());
+            }
 
             response.add(item);
         }
 
         return response;
+    }
+
+    private Map<Integer, Image> getUserImages(final List<Update> updates) {
+        final Set<Integer> userIds = getUserIds(updates);
+
+        return imageService.getImageForUsers(userIds);
     }
 
     private Map<Integer, List<Tag>> getUpdateTagsFromUpdates(final List<Update> updates) {
@@ -91,7 +109,7 @@ public class UpdateService {
         return result;
     }
 
-    private Set<Integer> getUserIds(List<Update> updates) {
+    private Set<Integer> getUserIds(final List<Update> updates) {
         final Set<Integer> userIds = new HashSet<>();
         for (Update update : updates) {
             userIds.add(update.getUserId());

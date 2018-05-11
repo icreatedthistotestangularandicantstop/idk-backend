@@ -17,8 +17,13 @@ import java.util.Set;
 
 @Component
 public class UserRepository extends BaseRepository implements UserRepositoryInterface {
+
+    private final DB db;
+
     @Autowired
-    private DB db;
+    UserRepository(final DB db) {
+        this.db = db;
+    }
 
     public int add(User user) {
         final String sql = "INSERT INTO `users` (`first_name`, `last_name`, `username`, `created_at`, `password`) VALUES " +

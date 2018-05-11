@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers(POST, "/api/auth/login").permitAll()
                 .regexMatchers(POST, "/api/auth/logout").permitAll()
                 .regexMatchers(GET, "/api/auth/login-data").permitAll()
+                .regexMatchers(GET, "/api/image/.*").permitAll()
 
                 .regexMatchers("/api/.*").hasAuthority(AuthorityType.USER_ROLE);
     }
