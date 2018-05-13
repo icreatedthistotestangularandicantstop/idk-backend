@@ -38,14 +38,15 @@ public class CommentController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Comment add(
+    public CommentResponse add(
             final @RequestBody @Valid CommentResource commentData,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         final int loggedUserId = userDetails.getId();
         final Comment comment = commentService.addNew(commentData, loggedUserId);
+        final CommentResponse response = commentService.findById(comment.getId(), loggedUserId);
 
-        return comment;
+        return response;
     }
 
     @RequestMapping(path = "/{id}")

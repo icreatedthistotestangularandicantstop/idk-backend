@@ -32,8 +32,21 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public List<CommentResponse> findByUpdateIdPaged(Page page, int updateId, Integer userId) {
+    public List<CommentResponse> findByUpdateIdPaged(final Page page, final int updateId, final Integer userId) {
         final List<Comment> comments = commentRepository.findByUpdateIdPaged(updateId, page);
+        final List<CommentResponse> response = createCommentResult(comments, userId);
+
+        return response;
+    }
+
+    public CommentResponse findById(final int id, final Integer userId) {
+        final Comment comment = commentRepository.findById(id);
+        final List<CommentResponse> response = createCommentResult(Collections.singletonList(comment), userId);
+
+        return response.get(0);
+    }
+
+    public List<CommentResponse> createCommentResult(final List<Comment> comments, final Integer userId) {
         final Set<Integer> likedUpdateIds = getLikedComments(comments, userId);
         final Map<Integer, Image> userImages = getUserImages(comments);
         final Map<Integer, User> users = getUserCommentOwners(comments);

@@ -39,7 +39,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
 
     @Override
     public Comment findById(int id) {
-        final String sql = "SELECT `id`, `content`, `user_id`, `update_id` FROM `comments` WHERE `id` = :id LIMIT 1";
+        final String sql = "SELECT * FROM `comments` WHERE `id` = :id LIMIT 1";
         try {
             final Comment result = db.getJdbcTemplate().queryForObject(
                     sql,
