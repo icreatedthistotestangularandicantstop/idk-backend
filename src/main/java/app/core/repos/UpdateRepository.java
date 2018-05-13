@@ -95,8 +95,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
                 " FROM `updates` " +
                 " WHERE (:userId IS NULL OR `user_id` = :userId) " +
                 " ORDER BY `created_at` DESC " +
-                " LIMIT :offset, :limit"
-                ;
+                " LIMIT :offset, :limit ";
         final Map<String, Integer> params = new HashMap<>();
         params.put("userId", targetUserId);
         params.put("offset", (page.getPage() - 1) * PAGE_SIZE);

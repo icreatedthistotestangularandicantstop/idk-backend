@@ -47,7 +47,7 @@ public class UpdateService {
     }
 
     public List<UpdateResponse> findPagedByUserId(final Page page, final Integer targetUserId, final Integer userId) {
-        final List<Update> updates = updateRepository.findPaged(page);
+        final List<Update> updates = updateRepository.findPagedByUserId(page, targetUserId);
 
         return filterUpdates(updates, userId);
     }

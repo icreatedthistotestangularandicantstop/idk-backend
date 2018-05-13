@@ -39,7 +39,6 @@ public class UpdateController {
         return response;
     }
 
-
     @RequestMapping(path = "list", method = RequestMethod.GET)
     public List<UpdateResponse> getUpdates(
             final @Valid Page page,
