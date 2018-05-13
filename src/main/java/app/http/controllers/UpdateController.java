@@ -27,14 +27,16 @@ public class UpdateController {
     private LikeService likeService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public Update add(
+    public UpdateResponse add(
             final @RequestBody @Valid UpdateResource updateData,
             final @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        updateData.setUserId(userDetails.getId());
+        final int loggedUserId = userDetails.getId();
+        updateData.setUserId(loggedUserId);
         final Update update = updateService.addNew(updateData);
+        final UpdateResponse response = updateService.findById(update.getId(), loggedUserId);
 
-        return update;
+        return response;
     }
 
 

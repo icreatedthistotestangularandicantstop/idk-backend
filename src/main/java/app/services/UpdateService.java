@@ -52,6 +52,13 @@ public class UpdateService {
         return filterUpdates(updates, userId);
     }
 
+    public UpdateResponse findById(final int updateId, final Integer loggedUserId) {
+        final Update update = updateRepository.findById(updateId);
+        final List<UpdateResponse> responses = filterUpdates(Collections.singletonList(update), loggedUserId);
+
+        return responses.get(0);
+    }
+
     private List<UpdateResponse> filterUpdates(final List<Update> updates, final Integer userId) {
         final Set<Integer> likedUpdateIds = getLikedUpdates(updates, userId);
         final Map<Integer, User> users = getUserUpdateOwners(updates);
