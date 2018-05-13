@@ -65,9 +65,7 @@ public class UpdateService {
             item.setUser(users.get(update.getUserId()));
             item.setTags(updateTags.get(update.getId()));
             final Image image = userImages.get(update.getUserId());
-            if (null != image) {
-                item.setImageId(image.getId());
-            }
+            item.setImageId(null != image ? image.getId() : -1);
 
             response.add(item);
         }

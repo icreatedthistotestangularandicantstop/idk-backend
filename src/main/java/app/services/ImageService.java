@@ -10,15 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.*;
 
 @Service
 public class ImageService {
+
+    private static final String DEFAULT_PROFILE_PICTURE = "default_image";
+
     private final ImageRepository imageRepository;
 
     @Autowired
@@ -67,6 +70,10 @@ public class ImageService {
     }
 
     public Image readById(final int id, final ImageSize size) {
+        if (!isValidImageId(id)) {
+            return getDefaultProfilePicture(size);
+        }
+
         final String filename;
         switch (size) {
             case small:
@@ -86,6 +93,32 @@ public class ImageService {
         image.setData(getFile(filename));
 
         return image;
+    }
+
+    private boolean isValidImageId(final int id) {
+        return 0 < id;
+    }
+
+    private Image getDefaultProfilePicture(final ImageSize size) {
+        final String filename = String.format("/%s_%s", DEFAULT_PROFILE_PICTURE, size.toString());
+        final Image image = new Image();
+        final String fileName = "/default_image_" + size.toString();
+        image.setMimeType("image/png");
+        image.setData(getResourceFile(fileName));
+
+        return image;
+    }
+
+    private byte[] getResourceFile(final String fileName) {
+        try {
+            final InputStream stream = getClass().getResourceAsStream(fileName);
+            byte[] response = new byte[stream.available()];
+            stream.read(response);
+
+            return response;
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private byte[] getFile(final String filename) {

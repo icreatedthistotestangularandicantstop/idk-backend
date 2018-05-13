@@ -57,9 +57,7 @@ public class CommentService {
             item.setLiked(likedUpdateIds.contains(comment.getId()));
             item.setUser(users.get(comment.getUserId()));
             final Image image = userImages.get(comment.getUserId());
-            if (null != image) {
-                item.setImageId(image.getId());
-            }
+            item.setImageId(null != image ? image.getId() : -1);
 
             response.add(item);
         }

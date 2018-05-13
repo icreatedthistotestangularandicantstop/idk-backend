@@ -36,18 +36,18 @@ public class ImageController {
     }
 
     @RequestMapping(value = "/{imageId}/{size}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getImageSize(@PathVariable(name = "imageId") final int imageId,
+    public ResponseEntity<byte[]> getImageSize(@PathVariable(name = "imageId") final Integer imageId,
                                                @PathVariable(name = "size") final ImageSize size) {
         return getImageData(imageId, size);
     }
 
     @RequestMapping(value = "/{imageId}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getImageSize(@PathVariable(name = "imageId") final int imageId) {
+    public ResponseEntity<byte[]> getImageSize(@PathVariable(name = "imageId") final Integer imageId) {
         return getImageData(imageId, null);
     }
 
 
-    private ResponseEntity<byte[]> getImageData(final int imageId, final ImageSize size) {
+    private ResponseEntity<byte[]> getImageData(final Integer imageId, final ImageSize size) {
         final Image image = imageService.readById(imageId, size);
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(image.getMimeType()));
