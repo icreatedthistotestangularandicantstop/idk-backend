@@ -111,6 +111,37 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
+    public List<Update> findPagedByTag(final Page page, final String tag) {
+        if (!isValidTag(tag)) {
+            return this.getEmptyList(Update.class);
+        }
+
+        final String sql = "SELECT u.* " +
+                " FROM `updates` AS u " +
+                " JOIN `update_tags` ut ON ut.update_id = u.id " +
+                " JOIN `tags` t ON ut.tag_id = t.id " +
+                " WHERE t.`name` = :tag " +
+                " ORDER BY u.`created_at` DESC " +
+                " LIMIT :offset, :limit ";
+        final Map<String, Object> params = new HashMap<>();
+        params.put("tag", tag.trim());
+        params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
+        params.put("limit", PAGE_SIZE);
+
+        final List<Update> updates = db.query(
+                sql,
+                new MapSqlParameterSource(params),
+                getMapper()
+        );
+
+        return updates;
+    }
+
+    private boolean isValidTag(final String tag) {
+        return null != tag && !tag.trim().equals("");
+    }
+
+    @Override
     public Update findById(int id) {
         final String sql = "SELECT * FROM `updates` WHERE `id` = :id LIMIT 1";
         try {

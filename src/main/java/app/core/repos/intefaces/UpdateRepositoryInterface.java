@@ -10,6 +10,7 @@ public interface UpdateRepositoryInterface {
     int add(Update update);
     List<Update> findPaged(Page page);
     List<Update> findPagedByUserId(Page page, Integer targetUserId);
+    List<Update> findPagedByTag(Page page, String tag);
     Update findById(int id);
     List<Update> findByUserId(int userId);
     Update findByIdAndUserId(int id, int userId);

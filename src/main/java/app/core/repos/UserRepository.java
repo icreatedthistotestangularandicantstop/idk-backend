@@ -38,7 +38,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
     }
 
     public User findByUsername(String username) {
-        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password` FROM `users` WHERE `username` = :username LIMIT 1";
+        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password`, `created_at` FROM `users` WHERE `username` = :username LIMIT 1";
         try {
             final User result = db.getJdbcTemplate().queryForObject(
                     sql,
@@ -53,7 +53,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
     }
 
     public User findById(final int id) {
-        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password` FROM `users` WHERE `id` = :id LIMIT 1";
+        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password`, `created_at` FROM `users` WHERE `id` = :id LIMIT 1";
         try {
             final User result = db.getJdbcTemplate().queryForObject(
                     sql,
@@ -72,7 +72,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         if (ids.isEmpty()) {
             return getEmptyList(User.class);
         }
-        final String sql = "SELECT `id`, `first_name`, `last_name`, `username` FROM `users` WHERE `id` IN (:ids)";
+        final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `created_at` FROM `users` WHERE `id` IN (:ids)";
         List<User> users = db.query(sql, new MapSqlParameterSource("ids", ids), getMapperSmall());
 
         return users;
@@ -86,6 +86,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
             user.setLastName(rs.getString("last_name"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
+            user.setCreatedAt(rs.getInt("created_at"));
 
             return user;
         };
@@ -98,6 +99,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
             user.setFirstName(rs.getString("first_name"));
             user.setLastName(rs.getString("last_name"));
             user.setUsername(rs.getString("username"));
+            user.setCreatedAt(rs.getInt("created_at"));
 
             return user;
         };

@@ -59,6 +59,16 @@ public class UpdateController {
         return updateService.findPagedByUserId(page, userId, loggedUserId);
     }
 
+    @RequestMapping(path = "list/tag/{tag}", method = RequestMethod.GET)
+    public List<UpdateResponse> getUpdatesByTag(
+            final @Valid Page page,
+            final @PathVariable("tag") String tag,
+            final @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        final Integer loggedUserId = userDetails == null ? null : userDetails.getId();
+        return updateService.findPagedByTag(page, tag, loggedUserId);
+    }
+
     @RequestMapping(path = "/{updateId}", method = RequestMethod.GET)
     public Update getById(final @PathVariable(value = "updateId") int updateId) {
         return updateRepository.findById(updateId);

@@ -52,6 +52,12 @@ public class UpdateService {
         return filterUpdates(updates, userId);
     }
 
+    public List<UpdateResponse> findPagedByTag(final Page page, final String tag, final Integer userId) {
+        final List<Update> updates = updateRepository.findPagedByTag(page, tag);
+
+        return filterUpdates(updates, userId);
+    }
+
     public UpdateResponse findById(final int updateId, final Integer loggedUserId) {
         final Update update = updateRepository.findById(updateId);
         final List<UpdateResponse> responses = filterUpdates(Collections.singletonList(update), loggedUserId);
