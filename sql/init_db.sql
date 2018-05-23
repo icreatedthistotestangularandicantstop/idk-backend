@@ -73,3 +73,14 @@ CREATE TABLE images (
     `mime_type` VARCHAR(40) NOT NULL,
     `user_id` INT NOT NULL REFERENCES `users` (`id`)
 );
+
+CREATE TABLE IF NOT EXISTS `notifications` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `to_user_id` INT NOT NULL REFERENCES `users` (`id`),
+    `from_user_id` INT NOT NULL REFERENCES `users` (`id`),
+    `rel_id` INT NOT NULL,
+    `rel_type` VARCHAR(55) NOT NULL,
+    `seen` TINYINT(1) NOT NULL,
+    `created_at` INT NOT NULL,
+    UNIQUE(`to_user_id`, `rel_id`, `rel_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
