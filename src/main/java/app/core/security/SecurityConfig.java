@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers(GET, "/api/auth/login-data").permitAll()
                 .regexMatchers(GET, "/api/image/.*").permitAll()
 
+                .regexMatchers("/ws/.*").hasAuthority(AuthorityType.USER_ROLE)
                 .regexMatchers("/api/.*").hasAuthority(AuthorityType.USER_ROLE);
     }
 

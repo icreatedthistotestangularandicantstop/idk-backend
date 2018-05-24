@@ -2,21 +2,19 @@ package app.core.repos;
 
 import app.core.DB;
 import app.core.repos.intefaces.LikeRepositoryInterface;
-import app.core.repos.intefaces.UpdateRepositoryInterface;
-import app.pojo.Favorite;
 import app.pojo.Like;
-import app.pojo.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class LikeRepository extends BaseRepository implements LikeRepositoryInterface {

@@ -4,9 +4,7 @@ import app.core.repos.CommentRepository;
 import app.core.repos.LikeRepository;
 import app.core.repos.UpdateRepository;
 import app.http.pojos.UpdateResource;
-import app.pojo.Favorite;
-import app.pojo.Like;
-import app.pojo.Update;
+import app.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +20,18 @@ public class LikeService {
     @Autowired
     private CommentRepository commentRepository;
 
+    private final NotificationService notificationService;
+
+    LikeService(final NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
     @Transactional
-    public boolean likeUpdate(int updateId, int userId) {
+    public boolean likeUpdate(final int updateId, final int userId) {
         final boolean liked = addUpdateLike(updateId, userId);
         if (liked) {
             incrementUpdateLikes(updateId);
+            this.sendUpdateNotification(updateId, userId);
 
             return true;
         } else {
@@ -51,6 +56,7 @@ public class LikeService {
         final boolean liked = addCommentLike(commentId, userId);
         if (liked) {
             incrementCommentLikes(commentId);
+            sendCommentNotification(commentId, userId);
 
             return true;
         } else {
@@ -148,4 +154,29 @@ public class LikeService {
     private void addCommentLikeLink(int updateId, int userId) {
         likeRepository.addCommentLike(updateId, userId);
     }
+
+    private void sendUpdateNotification(final int updateId, final int userId) {
+        final Update update = this.updateRepository.findById(updateId);
+        final int updateOwnerId = update.getUserId();
+
+        final Notification notification = Notification.createForUpdate(update, userId);
+        notification.setType(NotificationType.UPDATE_LIKE);
+
+        if (updateOwnerId != userId) {
+            this.notificationService.sendNotification(updateOwnerId, notification);
+        }
+    }
+
+    private void sendCommentNotification(final int commentId, final int userId) {
+        final Comment comment = this.commentRepository.findById(commentId);
+        final int commentOwnerId = comment.getUserId();
+
+        final Notification notification = Notification.createForComment(comment, userId);
+        notification.setType(NotificationType.COMMENT_LIKE);
+
+        if (commentOwnerId != userId) {
+            this.notificationService.sendNotification(commentOwnerId, notification);
+        }
+    }
+
 }

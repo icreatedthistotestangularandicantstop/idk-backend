@@ -27,9 +27,12 @@ public class CommentService {
 
     final UserRepository userRepository;
 
-    CommentService(final ImageService imageService, final UserRepository userRepository) {
+    private final NotificationService notificationService;
+
+    CommentService(final ImageService imageService, final UserRepository userRepository, final NotificationService notificationService) {
         this.imageService = imageService;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public List<CommentResponse> findByUpdateIdPaged(final Page page, final int updateId, final Integer userId) {
@@ -114,7 +117,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment addNew(CommentResource commentResource, int userId) {
+    public Comment addNew(final CommentResource commentResource, final int userId) {
         final Comment comment = new Comment();
         comment.setContent(commentResource.getContent());
         comment.setUpdateId(commentResource.getUpdateId());
@@ -125,6 +128,21 @@ public class CommentService {
 
         updateRepository.incrementUpdateComments(commentResource.getUpdateId());
 
+        sendUpdateNotification(commentResource.getUpdateId(), userId);
+
         return comment;
     }
+
+    private void sendUpdateNotification(final int updateId, final int userId) {
+        final Update update = this.updateRepository.findById(updateId);
+        final int updateOwnerId = update.getUserId();
+
+        final Notification notification = Notification.createForUpdate(update, userId);
+        notification.setType(NotificationType.UPDATE_COMMENT);
+
+        if (updateOwnerId != userId) {
+            this.notificationService.sendNotification(updateOwnerId, notification);
+        }
+    }
+
 }
