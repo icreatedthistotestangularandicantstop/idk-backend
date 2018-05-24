@@ -1,31 +1,20 @@
 package app.http.controllers;
 
-import app.core.repos.CommentRepository;
-import app.http.pojos.CommentResource;
-import app.http.pojos.CommentResponse;
 import app.http.pojos.CustomUserDetails;
-import app.http.pojos.Page;
+import app.http.pojos.NotificationResponse;
 import app.pojo.Comment;
-import app.services.CommentService;
-import app.services.LikeService;
+import app.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/notification")
 public class NotificationController {
     @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private CommentService commentService;
-
-    @Autowired
-    private LikeService likeService;
+    private NotificationService notificationService;
 
 //    @RequestMapping(path = "list", method = RequestMethod.GET)
 //    public List<CommentResponse> list(
@@ -46,5 +35,13 @@ public class NotificationController {
 //
 //        return response;
 //    }
+
+    @RequestMapping(path = "/info", method = RequestMethod.GET)
+    public NotificationResponse info(final @AuthenticationPrincipal CustomUserDetails userDetails) {
+        final int loggedUserId = userDetails.getId();
+        final NotificationResponse response = notificationService.getInfo(loggedUserId);
+
+        return response;
+    }
 
 }

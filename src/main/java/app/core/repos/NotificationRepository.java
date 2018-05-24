@@ -56,4 +56,23 @@ public class NotificationRepository extends BaseRepository implements Notificati
         db.getJdbcTemplate().update(sql, params);
     }
 
+    @Override
+    public int getNotSeen(final  int userId) {
+        final String sql = "SELECT count(*) FROM `notifications` WHERE `to_user_id` = :userId AND `seen` = 0";
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("userId", userId);
+
+        try {
+            final int notSeen = db.getJdbcTemplate().queryForObject(
+                    sql,
+                    new MapSqlParameterSource(params),
+                    Integer.class
+            );
+
+            return notSeen;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
 }

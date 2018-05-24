@@ -1,8 +1,11 @@
 package app.websocket.notification;
 
+import app.http.pojos.CustomUserDetails;
 import app.pojo.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -21,14 +24,14 @@ public class NotificationHandler extends TextWebSocketHandler {
     private final Map<Integer, List<WebSocketSession>> sessions = new HashMap<>();
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        final NotificationReceive received = objectMapper.readValue(message.getPayload(), NotificationReceive.class);
-
-        receiveMessage(session, received);
+    protected void handleTextMessage(final WebSocketSession session, final TextMessage message) throws Exception {
     }
 
-    protected void receiveMessage(WebSocketSession session, NotificationReceive message) throws Exception {
-        registerSession(session, message.getListenerUserId());
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        final CustomUserDetails loggedUser = getLoggedUser(session);
+
+        registerSession(session, loggedUser.getId());
     }
 
     public void sendToUser(final int userId, final Notification message) {
@@ -78,6 +81,12 @@ public class NotificationHandler extends TextWebSocketHandler {
         final List<WebSocketSession> sessions = this.sessions.get(userId);
 
         return sessions;
+    }
+
+    private CustomUserDetails getLoggedUser(final WebSocketSession session) {
+        final CustomUserDetails loggedUser = (CustomUserDetails) ((UsernamePasswordAuthenticationToken) session.getPrincipal()).getPrincipal();
+
+        return loggedUser;
     }
 
 }

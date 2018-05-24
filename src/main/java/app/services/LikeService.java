@@ -6,6 +6,7 @@ import app.core.repos.UpdateRepository;
 import app.http.pojos.UpdateResource;
 import app.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

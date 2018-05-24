@@ -1,6 +1,7 @@
 package app.services;
 
 import app.core.repos.NotificationRepository;
+import app.http.pojos.NotificationResponse;
 import app.pojo.Notification;
 import app.websocket.notification.NotificationHandler;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class NotificationService {
     public void sendNotification(final int toUserId, final Notification notification) {
         notificationRepository.add(notification);
         notificationHandler.sendToUser(toUserId, notification);
+    }
+
+    public NotificationResponse getInfo(final int userId) {
+        return new NotificationResponse(notificationRepository.getNotSeen(userId));
     }
 
 }
