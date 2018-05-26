@@ -16,17 +16,25 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping(path = "/api/comment")
 public class CommentController {
-    @Autowired
-    private CommentRepository commentRepository;
+
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
+    private final LikeService likeService;
 
     @Autowired
-    private CommentService commentService;
-
-    @Autowired
-    private LikeService likeService;
+    CommentController(
+            final CommentRepository commentRepository,
+            final CommentService commentService,
+            final LikeService likeService
+    ) {
+        this.commentRepository = commentRepository;
+        this.commentService = commentService;
+        this.likeService = likeService;
+    }
 
     @RequestMapping(path = "list/{updateId}", method = RequestMethod.GET)
     public List<CommentResponse> getComments(

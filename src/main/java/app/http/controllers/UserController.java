@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping(value = "/api/user")
 public class UserController {
@@ -29,12 +30,12 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public User add(final @RequestBody @Valid UserCreateResource userCreateData) {
-        User user = new User();
+        final User user = new User();
         user.setFirstName(userCreateData.getFirstName());
         user.setLastName(userCreateData.getLastName());
         user.setUsername(userCreateData.getUsername());
 
-        int newUserId = userRepository.add(user);
+        final int newUserId = userRepository.add(user);
         user.setId(newUserId);
 
         return user;

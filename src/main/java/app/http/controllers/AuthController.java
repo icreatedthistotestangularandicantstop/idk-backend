@@ -17,11 +17,17 @@ import javax.servlet.http.HttpSession;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping(path = "/api/auth")
 public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    private AuthenticationManager authenticationManager;
+    AuthController(final AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @RequestMapping(path = "/login-data", method = RequestMethod.GET)
     public AuthResource loginData(final @AuthenticationPrincipal CustomUserDetails user, final HttpSession session) {

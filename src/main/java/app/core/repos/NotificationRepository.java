@@ -4,10 +4,7 @@ import app.core.DB;
 import app.core.repos.intefaces.NotificationRepositoryInterface;
 import app.core.repos.intefaces.UpdateRepositoryInterface;
 import app.http.pojos.Page;
-import app.pojo.Favorite;
-import app.pojo.Like;
-import app.pojo.Notification;
-import app.pojo.Update;
+import app.pojo.*;
 import org.springframework.asm.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -27,6 +24,7 @@ import java.util.Map;
 @Component
 public class NotificationRepository extends BaseRepository implements NotificationRepositoryInterface {
 
+    private static final int PAGE_SIZE = 20;
     private final DB db;
 
     NotificationRepository(final DB db) {
@@ -48,10 +46,11 @@ public class NotificationRepository extends BaseRepository implements Notificati
     }
 
     @Override
-    public void see(final int notificationId) {
-        final String sql = "UPDATE `notifications` SET seen = 1 WHERE `id` = :id";
+    public void see(final int notificationId, final int userId) {
+        final String sql = "UPDATE `notifications` SET seen = 1 WHERE `id` = :id AND `to_user_id` = :userId";
         final Map<String, Integer> params = new HashMap<>();
         params.put("id", notificationId);
+        params.put("userId", userId);
 
         db.getJdbcTemplate().update(sql, params);
     }
@@ -73,6 +72,43 @@ public class NotificationRepository extends BaseRepository implements Notificati
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    @Override
+    public List<Notification> findPaged(final int userId, final Page page) {
+        final String sql =
+                " SELECT * " +
+                " FROM `notifications` " +
+                " WHERE `to_user_id` = :userId " +
+                " ORDER BY `created_at` DESC " +
+                " LIMIT :offset, :limit ";
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("offset", (page.getPage() - 1) * PAGE_SIZE);
+        params.put("limit", PAGE_SIZE);
+
+        final List<Notification> notifications = db.query(
+                sql,
+                new MapSqlParameterSource(params),
+                getMapper()
+        );
+
+        return notifications;
+    }
+
+    private RowMapper<Notification> getMapper() {
+        return (ResultSet rs, int rowNum) -> {
+            final Notification notification = new Notification();
+            notification.setId(rs.getInt("id"));
+            notification.setToUserId(rs.getInt("to_user_id"));
+            notification.setCreatedAt(rs.getInt("created_at"));
+            notification.setFromUserId(rs.getInt("from_user_id"));
+            notification.setRelId(rs.getInt("rel_id"));
+            notification.setSeen(rs.getBoolean("seen"));
+            notification.setType(NotificationType.fromString(rs.getString("rel_type")));
+
+            return notification;
+        };
     }
 
 }

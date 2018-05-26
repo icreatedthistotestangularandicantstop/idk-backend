@@ -14,17 +14,25 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping(path = "/api/update")
 public class UpdateController {
-    @Autowired
-    private UpdateRepository updateRepository;
+
+    private final UpdateRepository updateRepository;
+    private final UpdateService updateService;
+    private final LikeService likeService;
 
     @Autowired
-    private UpdateService updateService;
-
-    @Autowired
-    private LikeService likeService;
+    UpdateController(
+            final UpdateRepository updateRepository,
+            final UpdateService updateService,
+            final LikeService likeService
+    ) {
+        this.updateRepository = updateRepository;
+        this.updateService = updateService;
+        this.likeService = likeService;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public UpdateResponse add(
