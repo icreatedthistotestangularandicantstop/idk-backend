@@ -3,6 +3,7 @@ package app.pojo;
 public enum NotificationType {
     UPDATE_COMMENT,
     UPDATE_LIKE,
+    UPDATE_POSTED,
     COMMENT_LIKE;
 
     public static NotificationType fromString(final String target) {
@@ -16,6 +17,9 @@ public enum NotificationType {
                 break;
             case "UPDATE_COMMENT":
                 type = NotificationType.UPDATE_COMMENT;
+                break;
+            case "UPDATE_POSTED":
+                type = NotificationType.UPDATE_POSTED;
                 break;
             default:
                 type = null;

@@ -28,6 +28,7 @@ public class NotificationResponse {
         notification.setType(target.getType());
         notification.setRelId(target.getRelId());
         notification.setSeen(target.isSeen());
+        notification.setCreatedAt(target.getCreatedAt());
 
         return notification;
     }

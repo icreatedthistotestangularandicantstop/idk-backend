@@ -40,4 +40,16 @@ public class Notification {
         return notification;
     }
 
+    public static Notification copy(final Notification source) {
+        final Notification notification = new Notification();
+        notification.setFromUserId(source.getFromUserId());
+        notification.setToUserId(source.getToUserId());
+        notification.setRelId(source.getId());
+        notification.setSeen(source.isSeen());
+        notification.setType(source.getType());
+        notification.setCreatedAt(source.getCreatedAt());
+
+        return notification;
+    }
+
 }

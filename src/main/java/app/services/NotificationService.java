@@ -35,7 +35,7 @@ public class NotificationService {
 
     public void sendNotification(final int toUserId, final Notification notification) {
         notificationRepository.add(notification);
-        notificationHandler.sendToUser(toUserId, notification);
+        notificationHandler.sendToUser(toUserId, buildNotificationResponse(notification));
     }
 
     public NotificationInfoResponse getInfo(final int userId) {
@@ -62,6 +62,13 @@ public class NotificationService {
 
             response.add(item);
         }
+
+        return response;
+    }
+
+    private NotificationResponse buildNotificationResponse(final Notification notification) {
+        final NotificationResponse response = NotificationResponse.createFromNotification(notification);
+        response.setFrom(userRepository.findById(response.getFromUserId()));
 
         return response;
     }

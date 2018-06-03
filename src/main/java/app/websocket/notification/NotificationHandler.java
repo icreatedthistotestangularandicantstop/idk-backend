@@ -1,6 +1,7 @@
 package app.websocket.notification;
 
 import app.http.pojos.CustomUserDetails;
+import app.http.pojos.NotificationResponse;
 import app.pojo.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +35,7 @@ public class NotificationHandler extends TextWebSocketHandler {
         registerSession(session, loggedUser.getId());
     }
 
-    public void sendToUser(final int userId, final Notification message) {
+    public void sendToUser(final int userId, final NotificationResponse message) {
         final List<WebSocketSession> sessions = getSessionsForUser(userId);
 
         try {
@@ -46,7 +47,7 @@ public class NotificationHandler extends TextWebSocketHandler {
         }
     }
 
-    protected void sendMessage(final WebSocketSession session, final Notification response) throws Exception {
+    protected void sendMessage(final WebSocketSession session, final NotificationResponse response) throws Exception {
         session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
     }
 

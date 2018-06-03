@@ -106,6 +106,7 @@ public class NotificationRepository extends BaseRepository implements Notificati
             notification.setRelId(rs.getInt("rel_id"));
             notification.setSeen(rs.getBoolean("seen"));
             notification.setType(NotificationType.fromString(rs.getString("rel_type")));
+            notification.setCreatedAt(rs.getInt("created_at"));
 
             return notification;
         };
