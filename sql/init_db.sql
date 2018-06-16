@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `username` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci UNIQUE NOT NULL,
     `password` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `followers` INT NOT NULL DEFAULT 0,
+    `following` INT NOT NULL DEFAULT 0,
+    `updates` INT NOT NULL DEFAULT 0,
     `created_at` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

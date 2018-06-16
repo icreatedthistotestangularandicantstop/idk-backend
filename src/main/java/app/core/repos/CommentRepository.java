@@ -127,6 +127,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
             comment.setUpdateId(rs.getInt("update_id"));
             comment.setUserId(rs.getInt("user_id"));
             comment.setLikes(rs.getInt("likes"));
+            comment.setCreatedAt(rs.getInt("created_at"));
 
             return comment;
         };

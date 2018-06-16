@@ -15,7 +15,11 @@ public class User implements Serializable {
     private String lastName;
     private String username;
     private String password;
+    private int followers;
+    private int following;
+    private int updates;
     private long createdAt;
     private Image image;
+    private boolean isFollowed;
 
 }

@@ -8,12 +8,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreateResource {
+public class UserUpdateResource {
     @NotEmpty
     private String username;
-
-    @NotEmpty
-    private String password;
 
     @NotEmpty
     private String firstName;

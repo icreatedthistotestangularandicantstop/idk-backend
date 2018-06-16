@@ -30,13 +30,21 @@ public class UpdateService {
     private TagService tagService;
 
     private final ImageRepository imageRepository;
-
     private final ImageService imageService;
+    private final NotificationService notificationService;
+    private final FollowRepository followRepository;
 
     @Autowired
-    UpdateService(final ImageRepository imageRepository, final ImageService imageService) {
+    UpdateService(
+            final ImageRepository imageRepository,
+            final ImageService imageService,
+            final NotificationService notificationService,
+            final FollowRepository followRepository
+    ) {
         this.imageRepository = imageRepository;
         this.imageService = imageService;
+        this.notificationService = notificationService;
+        this.followRepository = followRepository;
     }
 
     public List<UpdateResponse> findPaged(final Page page, final Integer userId) {
@@ -151,7 +159,7 @@ public class UpdateService {
     }
 
     @Transactional
-    public Update addNew(UpdateResource updateResource) {
+    public Update addNew(final UpdateResource updateResource) {
         final Update update = new Update();
         update.setContent(updateResource.getContent());
         update.setUserId(updateResource.getUserId());
@@ -160,7 +168,22 @@ public class UpdateService {
         update.setId(newUpdateId);
         addUpdateTags(update);
 
+        sendNotificationToFollowers(
+                followRepository.getFollowersOf(updateResource.getUserId()),
+                Notification.createForUpdate(update, updateResource.getUserId())
+        );
+
         return update;
+    }
+
+    private void sendNotificationToFollowers(final List<Integer> followers, final Notification notification) {
+        notification.setType(NotificationType.UPDATE_POSTED);
+        for (final int followerId : followers) {
+            final Notification target = Notification.copy(notification);
+            target.setToUserId(followerId);
+
+            notificationService.sendNotification(followerId, target);
+        }
     }
 
     private void addUpdateTags(final Update update) {

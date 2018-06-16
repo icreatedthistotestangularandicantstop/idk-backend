@@ -1,8 +1,6 @@
 package app.core.repos.intefaces;
 
-import app.pojo.Favorite;
 import app.pojo.Like;
-import app.pojo.Update;
 
 import java.util.List;
 import java.util.Set;
