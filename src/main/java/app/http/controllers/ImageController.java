@@ -47,7 +47,6 @@ public class ImageController {
         return getImageData(imageId, null);
     }
 
-
     private ResponseEntity<byte[]> getImageData(final Integer imageId, final ImageSize size) {
         final Image image = imageService.readById(imageId, size);
         final HttpHeaders headers = new HttpHeaders();
