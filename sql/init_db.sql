@@ -1,3 +1,5 @@
+use `twoter`;
+
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INT PRIMARY KEY AUTO_INCREMENT,
     `first_name` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
