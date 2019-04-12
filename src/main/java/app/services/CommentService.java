@@ -6,7 +6,6 @@ import app.core.repos.UpdateRepository;
 import app.core.repos.UserRepository;
 import app.http.pojos.*;
 import app.pojo.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,25 +13,28 @@ import java.util.*;
 
 @Component
 public class CommentService {
-    @Autowired
-    private CommentRepository commentRepository;
 
-    @Autowired
-    private UpdateRepository updateRepository;
-
-    @Autowired
-    private LikeRepository likeRepository;
-
+    private final CommentRepository commentRepository;
+    private final UpdateRepository updateRepository;
+    private final LikeRepository likeRepository;
     private final ImageService imageService;
-
     private final UserRepository userRepository;
-
     private final NotificationService notificationService;
 
-    CommentService(final ImageService imageService, final UserRepository userRepository, final NotificationService notificationService) {
+    CommentService(
+            final ImageService imageService,
+            final UserRepository userRepository,
+            final NotificationService notificationService,
+            final LikeRepository likeRepository,
+            final UpdateRepository updateRepository,
+            final CommentRepository commentRepository
+    ) {
         this.imageService = imageService;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+        this.likeRepository = likeRepository;
+        this.updateRepository = updateRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<CommentResponse> findByUpdateIdPaged(final Page page, final int updateId, final Integer userId) {
