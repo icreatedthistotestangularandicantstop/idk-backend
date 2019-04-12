@@ -29,7 +29,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     private DB db;
 
     @Override
-    public int add(Update update) {
+    public int add(final Update update) {
         final String sql = "INSERT INTO `updates` (`content`, `user_id`, `created_at`) VALUES " +
                 "(:content, :userId, :createdAt)";
         update.setCreatedAt(System.currentTimeMillis() / 1000);
@@ -41,7 +41,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public void addFavorite(int updateId, int userId) {
+    public void addFavorite(final int updateId, final int userId) {
         final String sql = "INSERT INTO `favorites` (`update_id`, `user_id`, `favorited_at`) VALUES " +
                 "(:updateId, :userId, :favoritedAt)";
         final Map<String, Integer> params = new HashMap<>();
@@ -56,7 +56,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public Favorite findFavoriteByUpdateIdAndUserId(int updateId, int userId) {
+    public Favorite findFavoriteByUpdateIdAndUserId(final int updateId, final int userId) {
         final String sql = "SELECT * FROM `favorites` WHERE `update_id` = :updateId AND `user_id` = :userId LIMIT 1";
         final Map<String, Integer> params = new HashMap<>();
         params.put("updateId", updateId);
@@ -75,7 +75,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
         }
     }
 
-    public int updateFavorites(int updateId) {
+    public int updateFavorites(final int updateId) {
         final String sql = "UPDATE `updates` SET `favorites` = `favorites` + 1 WHERE `id` = :id";
 
         KeyHolder holder = new GeneratedKeyHolder();
@@ -142,7 +142,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public Update findById(int id) {
+    public Update findById(final int id) {
         final String sql = "SELECT * FROM `updates` WHERE `id` = :id LIMIT 1";
         try {
             final Update result = db.getJdbcTemplate().queryForObject(
@@ -158,7 +158,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public Update findByIdAndUserId(int id, int userId) {
+    public Update findByIdAndUserId(final int id, final int userId) {
         final String sql = "SELECT * FROM `updates` WHERE `id` = :id AND `user_id` = :userId LIMIT 1";
         final Map<String, Integer> params = new HashMap<>();
         params.put("id", id);
@@ -178,7 +178,7 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public List<Update> findByUserId(int userId) {
+    public List<Update> findByUserId(final int userId) {
         final String sql = "SELECT * FROM `updates` WHERE `user_id` = :userId ORDER BY `created_at` DESC";
         final List<Update> updates = db.query(
                 sql,
@@ -190,28 +190,28 @@ public class UpdateRepository extends BaseRepository implements UpdateRepository
     }
 
     @Override
-    public void incrementUpdateComments(int updateId) {
+    public void incrementUpdateComments(final int updateId) {
         final String sql = "UPDATE `updates` SET `comments` = `comments` + 1 WHERE `id` = :id";
 
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
     }
 
     @Override
-    public void incrementUpdateLikes(int updateId) {
+    public void incrementUpdateLikes(final int updateId) {
         final String sql = "UPDATE `updates` SET `likes` = `likes` + 1 WHERE `id` = :id";
 
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
     }
 
     @Override
-    public void decrementUpdateLikes(int updateId) {
+    public void decrementUpdateLikes(final int updateId) {
         final String sql = "UPDATE `updates` SET `likes` = `likes` - 1 WHERE `id` = :id";
 
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", updateId));
     }
 
     @Override
-    public boolean exists(int id) {
+    public boolean exists(final int id) {
         final String sql = "SELECT count(*) FROM `updates` WHERE `id` = :id";
         try {
             final int count = db.getJdbcTemplate().queryForObject(

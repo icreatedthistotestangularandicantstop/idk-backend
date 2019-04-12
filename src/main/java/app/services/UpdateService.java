@@ -14,37 +14,38 @@ import java.util.regex.Pattern;
 
 @Component
 public class UpdateService {
-    @Autowired
-    private UpdateRepository updateRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private LikeRepository likeRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private TagService tagService;
-
-    private final ImageRepository imageRepository;
+    private final TagService tagService;
     private final ImageService imageService;
     private final NotificationService notificationService;
+    private final ImageRepository imageRepository;
     private final FollowRepository followRepository;
+    private final LikeRepository likeRepository;
+    private final TagRepository tagRepository;
+    private final UpdateRepository updateRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     UpdateService(
-            final ImageRepository imageRepository,
+            final TagService tagService,
             final ImageService imageService,
+            final ImageRepository imageRepository,
             final NotificationService notificationService,
-            final FollowRepository followRepository
+            final FollowRepository followRepository,
+            final TagRepository tagRepository,
+            final LikeRepository likeRepository,
+            final UserRepository userRepository,
+            final UpdateRepository updateRepository
     ) {
-        this.imageRepository = imageRepository;
+        this.tagService = tagService;
         this.imageService = imageService;
+        this.imageRepository = imageRepository;
         this.notificationService = notificationService;
         this.followRepository = followRepository;
+        this.tagRepository = tagRepository;
+        this.likeRepository = likeRepository;
+        this.userRepository = userRepository;
+        this.updateRepository = updateRepository;
     }
 
     public List<UpdateResponse> findPaged(final Page page, final Integer userId) {

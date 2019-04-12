@@ -25,7 +25,7 @@ public class CommentService {
 
     private final ImageService imageService;
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final NotificationService notificationService;
 

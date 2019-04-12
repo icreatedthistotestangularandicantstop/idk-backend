@@ -20,8 +20,11 @@ import java.util.*;
 @Component
 public class TagService {
 
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
+
+    TagService(final TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
 
     public List<Tag> addTags(final Set<String> tags) {
         final List<Tag> added = tagRepository.findByName(tags);

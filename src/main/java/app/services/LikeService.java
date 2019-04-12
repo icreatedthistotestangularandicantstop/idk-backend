@@ -12,19 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class LikeService {
-    @Autowired
-    private LikeRepository likeRepository;
-
-    @Autowired
-    private UpdateRepository updateRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
+    private final LikeRepository likeRepository;
+    private final UpdateRepository updateRepository;
+    private final CommentRepository commentRepository;
     private final NotificationService notificationService;
 
-    LikeService(final NotificationService notificationService) {
+    LikeService(
+            final LikeRepository likeRepository,
+            final UpdateRepository updateRepository,
+            final CommentRepository commentRepository,
+            final NotificationService notificationService
+
+    ) {
         this.notificationService = notificationService;
+        this.likeRepository = likeRepository;
+        this.updateRepository = updateRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -41,7 +44,7 @@ public class LikeService {
     }
 
     @Transactional
-    public boolean unlikeUpdate(int updateId, int userId) {
+    public boolean unlikeUpdate(final int updateId, final int userId) {
         final boolean unliked = removeUpdateLike(updateId, userId);
         if (unliked) {
             decrementUpdateLikes(updateId);
@@ -53,7 +56,7 @@ public class LikeService {
     }
 
     @Transactional
-    public boolean likeComment(int commentId, int userId) {
+    public boolean likeComment(final int commentId, final int userId) {
         final boolean liked = addCommentLike(commentId, userId);
         if (liked) {
             incrementCommentLikes(commentId);
@@ -66,7 +69,7 @@ public class LikeService {
     }
 
     @Transactional
-    public boolean unlikeComment(int commentId, int userId) {
+    public boolean unlikeComment(final int commentId, final int userId) {
         final boolean unliked = removeCommentLike(commentId, userId);
         if (unliked) {
             decrementCommentLikes(commentId);
@@ -77,24 +80,23 @@ public class LikeService {
         }
     }
 
-    private void incrementUpdateLikes(int updateId) {
+    private void incrementUpdateLikes(final int updateId) {
         updateRepository.incrementUpdateLikes(updateId);
     }
 
-    private void decrementUpdateLikes(int updateId) {
+    private void decrementUpdateLikes(final int updateId) {
         updateRepository.decrementUpdateLikes(updateId);
     }
 
-
-    private void incrementCommentLikes(int commentId) {
+    private void incrementCommentLikes(final int commentId) {
         commentRepository.incrementCommentLikes(commentId);
     }
 
-    private void decrementCommentLikes(int commentId) {
+    private void decrementCommentLikes(final int commentId) {
         commentRepository.decrementCommentLikes(commentId);
     }
 
-    private boolean addUpdateLike(int updateId, int userId) {
+    private boolean addUpdateLike(final int updateId, final int userId) {
         if (!updateRepository.exists(updateId) || hasUserLikedUpdate(updateId, userId)) {
             return false;
         }
@@ -103,7 +105,7 @@ public class LikeService {
         return true;
     }
 
-    private boolean addCommentLike(int commentId, int userId) {
+    private boolean addCommentLike(final int commentId, final int userId) {
         if (!commentRepository.exists(commentId) || hasUserLikedComment(commentId, userId)) {
             return false;
         }
@@ -112,7 +114,7 @@ public class LikeService {
         return true;
     }
 
-    private boolean removeUpdateLike(int updateId, int userId) {
+    private boolean removeUpdateLike(final int updateId, final int userId) {
         if (!updateRepository.exists(updateId) || !hasUserLikedUpdate(updateId, userId)) {
             return false;
         }
@@ -121,7 +123,7 @@ public class LikeService {
         return true;
     }
 
-    private boolean removeCommentLike(int commentId, int userId) {
+    private boolean removeCommentLike(final int commentId, final int userId) {
         if (!commentRepository.exists(commentId) || !hasUserLikedComment(commentId, userId)) {
             return false;
         }
@@ -130,7 +132,7 @@ public class LikeService {
         return true;
     }
 
-    public boolean hasUserLikedUpdate(int updateId, int userId) {
+    public boolean hasUserLikedUpdate(final int updateId, final int userId) {
         final Like like = likeRepository.findUpdateLikeByUserId(updateId, userId);
         if (like == null) {
             return false;
@@ -139,7 +141,7 @@ public class LikeService {
         return true;
     }
 
-    public boolean hasUserLikedComment(int commentId, int userId) {
+    public boolean hasUserLikedComment(final int commentId, final int userId) {
         final Like like = likeRepository.findCommentLikeByUserId(commentId, userId);
         if (like == null) {
             return false;
@@ -148,11 +150,11 @@ public class LikeService {
         return true;
     }
 
-    private void addUpdateLikeLink(int updateId, int userId) {
+    private void addUpdateLikeLink(final int updateId, final int userId) {
         likeRepository.addUpdateLike(updateId, userId);
     }
 
-    private void addCommentLikeLink(int updateId, int userId) {
+    private void addCommentLikeLink(final int updateId, final int userId) {
         likeRepository.addCommentLike(updateId, userId);
     }
 

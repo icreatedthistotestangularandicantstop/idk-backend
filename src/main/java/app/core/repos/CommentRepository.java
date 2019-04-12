@@ -26,7 +26,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
     @Autowired
     private DB db;
 
-    public int add(Comment comment) {
+    public int add(final Comment comment) {
         final String sql = "INSERT INTO `comments` (`content`, `update_id`, `user_id`, `created_at`) VALUES " +
                 "(:content, :updateId, :userId, :createdAt)";
         comment.setCreatedAt(System.currentTimeMillis() / 1000);
@@ -38,7 +38,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
     }
 
     @Override
-    public Comment findById(int id) {
+    public Comment findById(final int id) {
         final String sql = "SELECT * FROM `comments` WHERE `id` = :id LIMIT 1";
         try {
             final Comment result = db.getJdbcTemplate().queryForObject(
@@ -54,7 +54,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
     }
 
     @Override
-    public List<Comment> findByUpdateId(int updateId) {
+    public List<Comment> findByUpdateId(final int updateId) {
         final String sql = "SELECT `id`, `content`, `user_id`, `update_id` " +
                 " FROM `comments` " +
                 " WHERE `update_id` = :updateId " +
@@ -69,7 +69,7 @@ public class CommentRepository extends BaseRepository implements CommentReposito
     }
 
     @Override
-    public List<Comment> findByUpdateIdPaged(int updateId, Page page) {
+    public List<Comment> findByUpdateIdPaged(final int updateId, final Page page) {
         final String sql = "SELECT * " +
                 " FROM `comments` " +
                 " WHERE `update_id` = :updateId " +
@@ -90,21 +90,21 @@ public class CommentRepository extends BaseRepository implements CommentReposito
     }
 
     @Override
-    public void incrementCommentLikes(int commentId) {
+    public void incrementCommentLikes(final int commentId) {
         final String sql = "UPDATE `comments` SET `likes` = `likes` + 1 WHERE `id` = :id";
 
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", commentId));
     }
 
     @Override
-    public void decrementCommentLikes(int commentId) {
+    public void decrementCommentLikes(final int commentId) {
         final String sql = "UPDATE `comments` SET `likes` = `likes` - 1 WHERE `id` = :id";
 
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", commentId));
     }
 
     @Override
-    public boolean exists(int id) {
+    public boolean exists(final int id) {
         final String sql = "SELECT count(*) FROM `comments` WHERE `id` = :id";
         try {
             final int count = db.getJdbcTemplate().queryForObject(

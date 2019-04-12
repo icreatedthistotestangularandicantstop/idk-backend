@@ -22,7 +22,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     private DB db;
 
     @Override
-    public Like addCommentLike(int commentId, int userId) {
+    public Like addCommentLike(final int commentId, final int userId) {
         final String sql = "INSERT INTO `comment_likes` (`comment_id`, `user_id`, `liked_at`) VALUES " +
                 "(:commentId, :userId, :likedAt)";
         final int likedAt = (int) System.currentTimeMillis() / 1000;
@@ -43,7 +43,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public Like addUpdateLike(int commentId, int userId) {
+    public Like addUpdateLike(final int commentId, final int userId) {
         final String sql = "INSERT INTO `update_likes` (`update_id`, `user_id`, `liked_at`) VALUES " +
                 "(:commentId, :userId, :likedAt)";
         final int likedAt = (int) System.currentTimeMillis() / 1000;
@@ -64,7 +64,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public Like findCommentLikeByUserId(int commentId, int userId) {
+    public Like findCommentLikeByUserId(final int commentId, final int userId) {
         final String sql = "SELECT * FROM `comment_likes` WHERE `comment_id` = :commentId AND `user_id` = :userId LIMIT 1";
         final Map<String, Integer> params = new HashMap<>();
         params.put("commentId", commentId);
@@ -84,7 +84,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public Like findUpdateLikeByUserId(int updateId, int userId) {
+    public Like findUpdateLikeByUserId(final int updateId, final int userId) {
         final String sql = "SELECT * FROM `update_likes` WHERE `update_id` = :updateId AND `user_id` = :userId LIMIT 1";
         final Map<String, Integer> params = new HashMap<>();
         params.put("updateId", updateId);
@@ -104,7 +104,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public List<Like> findUpdateLikesByIds(Set<Integer> updateIds, int userId) {
+    public List<Like> findUpdateLikesByIds(final Set<Integer> updateIds, final int userId) {
         if (updateIds.isEmpty()) {
             return getEmptyList(Like.class);
         }
@@ -124,7 +124,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public List<Like> findCommentLikesByIds(Set<Integer> commentIds, int userId) {
+    public List<Like> findCommentLikesByIds(final Set<Integer> commentIds, final int userId) {
         if (commentIds.isEmpty()) {
             return getEmptyList(Like.class);
         }
@@ -145,7 +145,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public void deleteCommentLike(int commentId, int userId) {
+    public void deleteCommentLike(final int commentId, final int userId) {
         final String sql = "DELETE FROM `comment_likes` WHERE `comment_id` = :commentId AND `user_id` = :userId";
         final Map<String, Integer> params = new HashMap<>();
         params.put("commentId", commentId);
@@ -155,7 +155,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
     }
 
     @Override
-    public void deleteUpdateLike(int updateId, int userId) {
+    public void deleteUpdateLike(final int updateId, final int userId) {
         final String sql = "DELETE FROM `update_likes` WHERE `update_id` = :updateId AND `user_id` = :userId";
         final Map<String, Integer> params = new HashMap<>();
         params.put("updateId", updateId);
@@ -166,7 +166,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
 
     private RowMapper<Like> getUpdateLikeMapper() {
         return (ResultSet rs, int rowNum) -> {
-            Like like = Like.createUpdateLike(rs.getInt("update_id"), rs.getInt("user_id"));
+            final Like like = Like.createUpdateLike(rs.getInt("update_id"), rs.getInt("user_id"));
             like.setId(rs.getInt("id"));
             like.setLikedAt(rs.getInt("liked_at"));
 
@@ -176,7 +176,7 @@ public class LikeRepository extends BaseRepository implements LikeRepositoryInte
 
     private RowMapper<Like> getCommentLikeMapper() {
         return (ResultSet rs, int rowNum) -> {
-            Like like = Like.createCommentLike(rs.getInt("comment_id"), rs.getInt("user_id"));
+            final Like like = Like.createCommentLike(rs.getInt("comment_id"), rs.getInt("user_id"));
             like.setId(rs.getInt("id"));
             like.setLikedAt(rs.getInt("liked_at"));
 

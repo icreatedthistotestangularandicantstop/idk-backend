@@ -28,7 +28,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         this.db = db;
     }
 
-    public int add(User user) {
+    public int add(final User user) {
         final String sql = "INSERT INTO `users` (`first_name`, `last_name`, `username`, `created_at`, `password`) VALUES " +
                 "(:first_name, :last_name, :username, :created_at, :password)";
         user.setCreatedAt(System.currentTimeMillis() / 1000);
@@ -54,7 +54,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         db.getJdbcTemplate().update(sql, params);
     }
 
-    public User findByUsername(String username) {
+    public User findByUsername(final String username) {
         final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `password`, `created_at` FROM `users` WHERE `username` = :username LIMIT 1";
         try {
             final User result = db.getJdbcTemplate().queryForObject(
@@ -97,7 +97,7 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
     }
 
     @Override
-    public List<User> findByIds(Set<Integer> ids) {
+    public List<User> findByIds(final Set<Integer> ids) {
         if (ids.isEmpty()) {
             return getEmptyList(User.class);
         }

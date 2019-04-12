@@ -56,7 +56,7 @@ public class NotificationRepository extends BaseRepository implements Notificati
     }
 
     @Override
-    public int getNotSeen(final  int userId) {
+    public int getNotSeen(final int userId) {
         final String sql = "SELECT count(*) FROM `notifications` WHERE `to_user_id` = :userId AND `seen` = 0";
         final Map<String, Integer> params = new HashMap<>();
         params.put("userId", userId);

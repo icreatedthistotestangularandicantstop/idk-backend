@@ -42,7 +42,7 @@ public class FollowRepository extends BaseRepository implements FollowRepository
     }
 
     @Override
-    public boolean unfollow(int followerId, int followedId) {
+    public boolean unfollow(final int followerId, final int followedId) {
         final String sql =
                 " DELETE FROM `followers` WHERE follower_id = :followerId AND followed_id = :followedId";
         final Map<String, Integer> params = new HashMap<>();

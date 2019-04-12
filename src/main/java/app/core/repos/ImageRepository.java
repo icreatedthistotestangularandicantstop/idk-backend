@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
