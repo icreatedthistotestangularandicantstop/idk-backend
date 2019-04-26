@@ -4,7 +4,9 @@ import app.http.pojos.AuthResource;
 import app.http.pojos.CustomUserDetails;
 import app.http.pojos.LoginResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,16 +32,17 @@ public class AuthController {
     }
 
     @RequestMapping(path = "/login-data", method = RequestMethod.GET)
-    public AuthResource loginData(final @AuthenticationPrincipal CustomUserDetails user, final HttpSession session) {
+    public ResponseEntity loginData(final @AuthenticationPrincipal CustomUserDetails user, final HttpSession session) {
         if (user == null || session == null) {
-            return null;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        return new AuthResource(user.getId(), session.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(new AuthResource(user.getId(), session.getId()));
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public AuthResource login(final @RequestBody LoginResource loginData, final HttpSession session) {
+        System.out.println(loginData.getUsername() + ", " + loginData.getPassword());
         CustomUserDetails user = authenticate(loginData);
 
         return new AuthResource(user.getId(), session.getId());
