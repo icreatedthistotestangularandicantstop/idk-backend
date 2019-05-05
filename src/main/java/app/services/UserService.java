@@ -3,6 +3,7 @@ package app.services;
 import app.core.repos.FollowRepository;
 import app.core.repos.ImageRepository;
 import app.core.repos.UserRepository;
+import app.http.pojos.UserCreateResource;
 import app.http.pojos.UserUpdateResource;
 import app.pojo.Image;
 import app.pojo.User;
@@ -38,6 +39,10 @@ public class UserService {
 
     public void upate(final UserUpdateResource user, final int userId) {
         userRepository.update(user, userId);
+    }
+
+    public long create(final UserCreateResource user) {
+        return userRepository.add(user);
     }
 
 }

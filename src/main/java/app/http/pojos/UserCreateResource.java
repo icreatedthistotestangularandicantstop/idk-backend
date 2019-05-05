@@ -13,12 +13,13 @@ public class UserCreateResource {
     private String username;
 
     @NotEmpty
-    private String password;
-
-    @NotEmpty
     private String firstName;
 
     @NotEmpty
     private String lastName;
+
+    @NotEmpty
+    private String password;
+
 
 }

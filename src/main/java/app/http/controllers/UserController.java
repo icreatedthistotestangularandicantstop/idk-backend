@@ -44,16 +44,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public User add(final @Valid @RequestBody UserCreateResource userCreateData) {
-        final User user = new User();
-        user.setFirstName(userCreateData.getFirstName());
-        user.setLastName(userCreateData.getLastName());
-        user.setUsername(userCreateData.getUsername());
-
-        final int newUserId = userRepository.add(user);
-        user.setId(newUserId);
-
-        return user;
+    public void add(final @Valid @RequestBody UserCreateResource userCreateData) {
+        System.out.println("CREATE USER");
+        userService.create(userCreateData);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

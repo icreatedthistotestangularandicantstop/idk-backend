@@ -1,5 +1,6 @@
 package app.core.repos.intefaces;
 
+import app.http.pojos.UserCreateResource;
 import app.http.pojos.UserUpdateResource;
 import app.pojo.User;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserRepositoryInterface {
-    int add(User user);
+    int add(UserCreateResource user);
     void update(UserUpdateResource user, int userId);
     User findByUsername(String username);
     User findById(int id);

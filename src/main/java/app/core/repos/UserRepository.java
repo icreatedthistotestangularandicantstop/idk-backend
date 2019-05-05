@@ -2,6 +2,7 @@ package app.core.repos;
 
 import app.core.DB;
 import app.core.repos.intefaces.UserRepositoryInterface;
+import app.http.pojos.UserCreateResource;
 import app.http.pojos.UserUpdateResource;
 import app.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,19 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         this.db = db;
     }
 
-    public int add(final User user) {
+    public int add(final UserCreateResource user) {
         final String sql = "INSERT INTO `users` (`first_name`, `last_name`, `username`, `created_at`, `password`) VALUES " +
-                "(:first_name, :last_name, :username, :created_at, :password)";
-        user.setCreatedAt(System.currentTimeMillis() / 1000);
-        user.setPassword("top_secret");
+                "(:firstName, :lastName, :username, :createdAt, :password)";
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("firstName", user.getFirstName());
+        params.put("lastName", user.getFirstName());
+        params.put("username", user.getFirstName());
+        params.put("createdAt", System.currentTimeMillis() / 1000);
+        params.put("password", user.getPassword());
 
         KeyHolder holder = new GeneratedKeyHolder();
-        db.getJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(user), holder);
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource(params), holder);
 
         return Integer.parseInt(holder.getKeys().get("GENERATED_KEY").toString());
     }
