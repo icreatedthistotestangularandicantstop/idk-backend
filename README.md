@@ -21,10 +21,6 @@ Part of a mini social network project combining features from Facebook and Twitt
 
 This project main purpose is for skill sharpenning
 
-## NOTE
+## Run project
 
-As I mentioned previously the purpose of this project is to sharpen my skills and the project lacks tests and comments on some places which should normally not be omitted
-
-
-docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -t mysql:5.7
-mysql -u root -p -h 0.0.0.0 -P 3307 -D social < ./sql/init_db.sql
+`docker-compose up --build` will build and run the project
