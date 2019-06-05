@@ -141,6 +141,20 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
         db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", userId));
     }
 
+    @Override
+    public void incrementUpdates(final int userId) {
+        final String sql = "UPDATE `users` SET `updates` = `updates` + 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", userId));
+    }
+
+    @Override
+    public void decrementUpdates(final int userId) {
+        final String sql = "UPDATE `users` SET `updates` = `updates` - 1 WHERE `id` = :id";
+
+        db.getJdbcTemplate().update(sql, new MapSqlParameterSource("id", userId));
+    }
+
     private RowMapper<User> getMapper() {
         return (final ResultSet rs, final int rowNum) -> {
             final User user = new User();

@@ -18,5 +18,7 @@ public interface UserRepositoryInterface {
     void decrementFollowersFor(int userId);
     void incrementFollowedFor(int userId);
     void decrementFollowedFor(int userId);
+    void incrementUpdates(int userId);
+    void decrementUpdates(int userId);
 
 }

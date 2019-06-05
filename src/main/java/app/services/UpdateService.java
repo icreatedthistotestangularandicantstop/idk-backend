@@ -167,6 +167,7 @@ public class UpdateService {
 
         final int newUpdateId = updateRepository.add(update);
         update.setId(newUpdateId);
+        userRepository.incrementUpdates(updateResource.getUserId());
         addUpdateTags(update);
 
         sendNotificationToFollowers(
