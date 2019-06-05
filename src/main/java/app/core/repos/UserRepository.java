@@ -35,8 +35,8 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
 
         final Map<String, Object> params = new HashMap<>();
         params.put("firstName", user.getFirstName());
-        params.put("lastName", user.getFirstName());
-        params.put("username", user.getFirstName());
+        params.put("lastName", user.getLastName());
+        params.put("username", user.getUsername());
         params.put("createdAt", System.currentTimeMillis() / 1000);
         params.put("password", user.getPassword());
 

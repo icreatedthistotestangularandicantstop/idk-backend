@@ -45,7 +45,6 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public void add(final @Valid @RequestBody UserCreateResource userCreateData) {
-        System.out.println("CREATE USER");
         userService.create(userCreateData);
     }
 
