@@ -10,6 +10,8 @@ import app.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -43,6 +45,10 @@ public class UserService {
 
     public long create(final UserCreateResource user) {
         return userRepository.add(user);
+    }
+
+    public List<User> findTopPopular() {
+        return userRepository.findMostPopular();
     }
 
 }

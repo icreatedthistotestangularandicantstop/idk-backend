@@ -26,6 +26,10 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
+    public List<Tag> findTopPopular() {
+        return tagRepository.findMostPopular();
+    }
+
     public List<Tag> addTags(final Set<String> tags) {
         final List<Tag> added = tagRepository.findByName(tags);
         final Set<String> toAdd = new HashSet<>();

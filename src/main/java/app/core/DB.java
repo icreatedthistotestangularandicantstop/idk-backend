@@ -22,6 +22,12 @@ public class DB {
         return jdbcTemplate;
     }
 
+    public <T> List<T> query(String sql, RowMapper<T> rowMapper) {
+        List<T> result = jdbcTemplate.query(sql, rowMapper);
+
+        return result == null ? new LinkedList<>() : result;
+    }
+
     public <T> List<T> query(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) {
         List<T> result = jdbcTemplate.query(sql, paramSource, rowMapper);
 

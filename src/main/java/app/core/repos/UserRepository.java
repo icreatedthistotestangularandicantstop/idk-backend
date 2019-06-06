@@ -108,7 +108,20 @@ public class UserRepository extends BaseRepository implements UserRepositoryInte
             return getEmptyList(User.class);
         }
         final String sql = "SELECT `id`, `first_name`, `last_name`, `username`, `created_at` FROM `users` WHERE `id` IN (:ids)";
-        List<User> users = db.query(sql, new MapSqlParameterSource("ids", ids), getMapperSmall());
+        final List<User> users = db.query(sql, new MapSqlParameterSource("ids", ids), getMapperSmall());
+
+        return users;
+    }
+
+    @Override
+    public List<User> findMostPopular() {
+        final String sql =
+                "SELECT `id`, `first_name`, `last_name`, `username`, `created_at` " +
+                "FROM `users` " +
+                "WHERE followers > 0 " +
+                "ORDER BY followers " +
+                "DESC LIMIT 5";
+        final List<User> users = db.query(sql, getMapperSmall());
 
         return users;
     }

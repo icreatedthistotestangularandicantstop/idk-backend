@@ -14,6 +14,7 @@ public interface UserRepositoryInterface {
     User findByUsername(String username);
     User findById(int id);
     List<User> findByIds(Set<Integer> ids);
+    List<User> findMostPopular();
     void incrementFollowersFor(int userId);
     void decrementFollowersFor(int userId);
     void incrementFollowedFor(int userId);

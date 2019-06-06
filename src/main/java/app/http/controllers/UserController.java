@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
@@ -41,6 +42,13 @@ public class UserController {
     ) {
         final int loggedUserId = userDetails.getId();
         return userService.findById(userId, loggedUserId);
+    }
+
+    @RequestMapping(path = "/popular", method = RequestMethod.GET)
+    public List<User> getById() {
+        final List<User> users = userService.findTopPopular();
+
+        return users;
     }
 
     @RequestMapping(method = RequestMethod.POST)

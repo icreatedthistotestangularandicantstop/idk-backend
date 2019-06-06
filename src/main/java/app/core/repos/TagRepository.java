@@ -92,6 +92,29 @@ public class TagRepository extends BaseRepository {
         }
     }
 
+    public List<Tag> findMostPopular() {
+        final String sql = "SELECT t.id, t.name, t.created_at, t1.count " +
+                "FROM tags t " +
+                "JOIN (" +
+                    "SELECT tag_id, count(*) count " +
+                    "FROM update_tags " +
+                    "GROUP BY tag_id " +
+                    "ORDER BY count DESC" +
+                ") t1 ON t.id = t1.tag_id " +
+                "ORDER BY t1.count " +
+                "DESC LIMIT 5";
+        try {
+            final List<Tag> result = db.query(sql, getMapper());
+            System.out.println(sql);
+            System.out.println(result.size());
+
+            return result;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return getEmptyList(Tag.class);
+        }
+    }
+
     public List<UpdateTag> findUpdateTagsByUpdateId(final int updateId) {
         final String sql = "SELECT * FROM `update_tags` WHERE `update_id` = :updateId";
         try {
