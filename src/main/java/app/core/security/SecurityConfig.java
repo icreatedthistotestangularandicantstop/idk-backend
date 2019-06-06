@@ -1,5 +1,6 @@
 package app.core.security;
 
+import app.utils.PasswordHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,13 +60,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configurationGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(new PasswordEncoder() {
             @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
+            public String encode(final CharSequence rawPassword) {
+                return PasswordHash.hash(rawPassword);
             }
 
             @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.toString().equals(encodedPassword);
+            public boolean matches(final CharSequence rawPassword, String encodedPassword) {
+                final String passToCompare = PasswordHash.hash(rawPassword);
+
+                return passToCompare.equals(encodedPassword);
             }
         });
     }
