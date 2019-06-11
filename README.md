@@ -23,4 +23,5 @@ This project main purpose is for skill sharpenning
 
 ## Run project
 
-`docker-compose up --build` will build and run the project
+`docker-compose build` will build the project image
+`docker-compose up` will run the project image
