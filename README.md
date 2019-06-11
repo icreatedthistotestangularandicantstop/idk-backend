@@ -25,3 +25,4 @@ This project main purpose is for skill sharpenning
 
 `docker-compose build` will build the project image
 `docker-compose up` will run the project image
+`docker exec -it twoter_db bash /usr/db_setup.sh` will run SQL scripts to create and populate tables

@@ -3,6 +3,7 @@ version: '3'
 services:
   mysql:
     image: mysql:5.7
+    container_name: twoter_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: twoter
@@ -10,11 +11,14 @@ services:
       MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
+    volumes:
+      - ./sql:/usr/sql
+      - ./db_setup.sh:/usr/db_setup.sh
   backend:
     build:
       context:
         ./
-    container_name: java_backend
+    container_name: twoter_backend
     depends_on:
       - mysql
     ports:

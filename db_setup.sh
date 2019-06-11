@@ -1,5 +1,5 @@
-cat sql/*.sql > sql/all.sql
+cat /usr/sql/*.sql > /usr/sql/all.sql
 
-mysql -u root -p < sql/all.sql
+mysql --login-path=local -u $MYSQL_USER -p$MYSQL_ROOT_PASSWORD -h 0.0.0.0 $MYSQL_DATABASE < /usr/sql/all.sql
 
-rm sql/all.sql
+rm /usr/sql/all.sql

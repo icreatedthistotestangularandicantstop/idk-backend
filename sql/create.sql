@@ -1,1 +1,1 @@
-create database `twoter`;
+CREATE DATABASE IF NOT EXISTS `twoter`;

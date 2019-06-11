@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `update_tags` (
     UNIQUE(`tag_id`, `update_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE images (
+CREATE TABLE IF NOT EXISTS images (
     `id` INT PRIMARY KEY AUTO_INCREMENT,
     `created_at` INT NOT NULL,
     `mime_type` VARCHAR(40) NOT NULL,
