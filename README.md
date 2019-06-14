@@ -23,6 +23,8 @@ This project main purpose is for skill sharpenning
 
 ## Run project
 
-`docker-compose build` will build the project image
-`docker-compose up` will run the project image
-`docker exec -it twoter_db bash /usr/db_setup.sh` will run SQL scripts to create and populate tables
+ - `docker-compose build` will build the project image
+ - `docker-compose up` will run the project image
+ - `docker exec -it twoter_db bash /usr/db_setup.sh` will run SQL scripts to create and populate tables
+
+A default user will be created after the database script is run with username=zivanof and password=1234
